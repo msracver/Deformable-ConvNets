@@ -5,7 +5,7 @@ The major contributors of this repository include [Yuwen Xiong](https://github.c
 
 ## Disclaimer
 
-This is an official implementation for [Deformable Convolutional Networks](https://arxiv.org/abs/1703.06211) (Deformable ConvNets). Some points worth noticing are as follows:
+This is an official implementation for [Deformable Convolutional Networks](https://arxiv.org/abs/1703.06211) (Deformable ConvNets). It is worth noticing that:
 
   * The original implementation is based on our internal Caffe version on Windows. There are slight differences in the final accuracy and running time due to the plenty details in platform switch.
   * The code is tested on official [MXNet@(commit 62ecb60)](https://github.com/dmlc/mxnet/tree/62ecb60) with the extra operators for Deformable ConvNets.
@@ -86,9 +86,9 @@ Any NVIDIA GPUs with at least 4GB memory should be OK.
 ~~~
 git clone https://github.com/msracver/Deformable-ConvNets.git
 ~~~
-2. For Windows user, run ``cmd .\init.bat``, for Linux user, run `sh ./init.sh`. The scripts will build cython module automatically and create some folders.
+2. For Windows users, run ``cmd .\init.bat``. For Linux user, run `sh ./init.sh`. The scripts will build cython module automatically and create some folders.
 3. Copy operators in `./rfcn/operator_cxx` to `$(YOUR_MXNET_FOLDER)/src/operator/contrib` and recompile MXNet.
-4. Please install MXNet following the official guide of MXNet. For advanced users, you may put your Python packge to `./external/mxnet/$(YOUR_MXNET_PACKAGE)`, and modify `MXNET_VERSION` in `./experiments/rfcn/cfgs/*.yaml` to `$(YOUR_MXNET_PACKAGE)`, then you can switch among different versions of MXNet quickly.
+4. Please install MXNet following the official guide of MXNet. For advanced users, you may put your Python packge into `./external/mxnet/$(YOUR_MXNET_PACKAGE)`, and modify `MXNET_VERSION` in `./experiments/rfcn/cfgs/*.yaml` to `$(YOUR_MXNET_PACKAGE)`. Thus you can switch among different versions of MXNet quickly.
 
 
 ## Demo
@@ -131,13 +131,13 @@ We will release the visualizaiton tool which visualizes the deformation effects 
 
 ## Usage
 
-1. All of our experiments settings (#GPUs, dataset, etc.) are kept in yaml files under folder `./experiments/rfcn/cfgs`.
-2. Four config files have been provided so far, namely, R-FCN for COCO/VOC and Deformable R-FCN for COCO/VOC, respectively. We use 8 and 4 GPUs to train models on COCO and on VOC, respectively. You can modify the GPU numbers in the config files.
-3. To perform experiments, run the py scripts with the corresponding config file as input. As an example, to train and test deformable convnets on COCO with ResNet-v1-101, use the following command
+1. All of our experiment settings (GPU #, dataset, etc.) are kept in yaml files at folder `./experiments/rfcn/cfgs`.
+2. Four config files have been provided so far, namely, R-FCN for COCO/VOC and Deformable R-FCN for COCO/VOC, respectively. We use 8 and 4 GPUs to train models on COCO and on VOC, respectively.
+3. To perform experiments, run the python scripts with the corresponding config file as input. For example, to train and test deformable convnets on COCO with ResNet-v1-101, use the following command
     ```
     python experiments\rfcn\rfcn_end2end_train_test.py --cfg experiments\rfcn\cfgs\resnet_v1_101_coco_trainval_rfcn_dcn_end2end_ohem.yaml
     ```
-    A cache folder would be created automatically to save the model and the log under `output/rfcn_dcn_coco/`
+    A cache folder would be created automatically to save the model and the log under `output/rfcn_dcn_coco/`.
 4. Please find more details in config files and in our code.
 
 ## Misc.
@@ -147,6 +147,6 @@ MXNet build without CuDNN is recommended.
 Code has been tested under:
 
 - Ubuntu 14.04 with a Maxwell Titan X GPU and Intel Xeon CPU E5-2620 v2 @ 2.10GHz
-- Windows Server 2012 R2 with 8 K40 GPUs and Intel Xeon CPU E5-2650 v2 @ 2.60Ghz
-- Windows Server 2012 R2 with 4 Pascal Titan X GPUs and Intel Xeon CPU E5-2650 v4 @ 2.30Ghz
+- Windows Server 2012 R2 with 8 K40 GPUs and Intel Xeon CPU E5-2650 v2 @ 2.60GHz
+- Windows Server 2012 R2 with 4 Pascal Titan X GPUs and Intel Xeon CPU E5-2650 v4 @ 2.30GHz
 
