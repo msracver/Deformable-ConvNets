@@ -5,7 +5,7 @@ The major contributors of this repository include [Yuwen Xiong](https://github.c
 
 ## Disclaimer
 
-This is an official implementation for [Deformable Convolutional Networks](https://arxiv.org/abs/1703.06211) (Deformable ConvNets), but there are some points which you need to note:
+This is an official implementation for [Deformable Convolutional Networks](https://arxiv.org/abs/1703.06211) (Deformable ConvNets). Some points worth noticing are as follows:
 
   * The original implementation is based on our internal Caffe version on Windows. There are slight differences in the final accuracy and running time due to the plenty details in platform switch.
   * We tested our codes on official [MXNet@(commit 62ecb60)](https://github.com/dmlc/mxnet/tree/62ecb60) with the extra operators for Deformable ConvNets.
