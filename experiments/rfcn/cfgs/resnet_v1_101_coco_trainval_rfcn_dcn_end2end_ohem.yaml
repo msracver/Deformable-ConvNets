@@ -1,0 +1,154 @@
+---
+MXNET_VERSION: "mxnet"
+output_path: "./output/rfcn_dcn/coco"
+symbol: resnet_v1_101_rfcn_dcn
+gpus: '0,1,2,3,4,5,6,7'
+CLASS_AGNOSTIC: true
+SCALES:
+- 600
+- 1000
+default:
+  frequent: 100
+  kvstore: device
+network:
+  pretrained: "./model/pretrained_model/resnet_v1_101"
+  pretrained_epoch: 0
+  PIXEL_MEANS:
+  - 103.06
+  - 115.90
+  - 123.15
+  IMAGE_STRIDE: 0
+  RCNN_FEAT_STRIDE: 16
+  RPN_FEAT_STRIDE: 16
+  FIXED_PARAMS:
+  - conv1
+  - bn_conv1
+  - res2
+  - bn2
+  - gamma
+  - beta
+  FIXED_PARAMS_SHARED:
+  - conv1
+  - bn_conv1
+  - res2
+  - bn2
+  - res3
+  - bn3
+  - res4
+  - bn4
+  - gamma
+  - beta
+  ANCHOR_RATIOS:
+  - 0.5
+  - 1
+  - 2
+  ANCHOR_SCALES:
+  - 4
+  - 8
+  - 16
+  - 32
+  NUM_ANCHORS: 12
+dataset:
+  NUM_CLASSES: 81
+  dataset: coco
+  dataset_path: "./data/coco"
+  image_set: train2014+val2014
+  root_path: "./data"
+  test_image_set: test-dev2015
+  proposal: rpn
+TRAIN:
+  lr: 0.0005
+  lr_step: '5.333'
+  warmup: true
+  warmup_lr: 0.00005
+  # typically we will use 8000 warmup step for single GPU for COCO
+  warmup_step: 1000
+  begin_epoch: 0
+  end_epoch: 8
+  model_prefix: 'rfcn_dcn_coco'
+  # whether resume training
+  RESUME: false
+  # whether flip image
+  FLIP: true
+  # whether shuffle image
+  SHUFFLE: true
+  # whether use OHEM
+  ENABLE_OHEM: true
+  # size of images for each device, 2 for rcnn, 1 for rpn and e2e
+  BATCH_IMAGES: 1
+  # e2e changes behavior of anchor loader and metric
+  END2END: true
+  # group images with similar aspect ratio
+  ASPECT_GROUPING: true
+  # R-CNN
+  # rcnn rois batch size
+  BATCH_ROIS: -1
+  BATCH_ROIS_OHEM: 128
+  # rcnn rois sampling params
+  FG_FRACTION: 0.25
+  FG_THRESH: 0.5
+  BG_THRESH_HI: 0.5
+  BG_THRESH_LO: 0.0
+  # rcnn bounding box regression params
+  BBOX_REGRESSION_THRESH: 0.5
+  BBOX_WEIGHTS:
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+
+  # RPN anchor loader
+  # rpn anchors batch size
+  RPN_BATCH_SIZE: 256
+  # rpn anchors sampling params
+  RPN_FG_FRACTION: 0.5
+  RPN_POSITIVE_OVERLAP: 0.7
+  RPN_NEGATIVE_OVERLAP: 0.3
+  RPN_CLOBBER_POSITIVES: false
+  # rpn bounding box regression params
+  RPN_BBOX_WEIGHTS:
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  RPN_POSITIVE_WEIGHT: -1.0
+  # used for end2end training
+  # RPN proposal
+  CXX_PROPOSAL: false
+  RPN_NMS_THRESH: 0.7
+  RPN_PRE_NMS_TOP_N: 6000
+  RPN_POST_NMS_TOP_N: 300
+  RPN_MIN_SIZE: 0
+  # approximate bounding box regression
+  BBOX_NORMALIZATION_PRECOMPUTED: true
+  BBOX_MEANS:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  BBOX_STDS:
+  - 0.1
+  - 0.1
+  - 0.2
+  - 0.2
+TEST:
+  # use rpn to generate proposal
+  HAS_RPN: true
+  # size of images for each device
+  BATCH_IMAGES: 1
+  # RPN proposal
+  CXX_PROPOSAL: false
+  RPN_NMS_THRESH: 0.7
+  RPN_PRE_NMS_TOP_N: 6000
+  RPN_POST_NMS_TOP_N: 300
+  RPN_MIN_SIZE: 0
+  # RPN generate proposal
+  PROPOSAL_NMS_THRESH: 0.7
+  PROPOSAL_PRE_NMS_TOP_N: 20000
+  PROPOSAL_POST_NMS_TOP_N: 2000
+  PROPOSAL_MIN_SIZE: 0
+  # RCNN nms
+  NMS: 0.3
+  test_epoch: 8
+  max_per_image: 100
+
