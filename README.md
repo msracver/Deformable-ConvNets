@@ -84,7 +84,7 @@ Any NVIDIA GPU with at least 4 GB of memory suffices.
 
 1. Clone the Deformable ConvNets repository
 ~~~
-git clone https://github.com/msracver/deformable-convolutional-networks.git
+git clone https://github.com/msracver/Deformable-ConvNets.git
 ~~~
 2. For Windows user, run ``cmd .\init.bat``, for Linux user, run `sh ./init.sh`, it will build cython module automatically and add some folder.
 3. Copy operators in `./rfcn/operator_cxx` to `$(YOUR_MXNET_FOLDER)/src/operator/contrib` and recompile your MXNet
