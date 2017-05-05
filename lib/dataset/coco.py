@@ -13,7 +13,6 @@ from .pycocotools import mask as COCOmask
 from utils.mask_coco2voc import mask_coco2voc
 from utils.mask_voc2coco import mask_voc2coco
 from utils.tictoc import tic, toc
-import hickle as hkl
 from bbox.bbox_transform import clip_boxes
 import multiprocessing as mp
 
