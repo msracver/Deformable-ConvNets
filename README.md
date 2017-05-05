@@ -52,8 +52,8 @@ If you find Deformable ConvNets useful in your research, please consider citing:
 
 |                                 | training data     | testing data | mAP@0.5 | mAP@0.7 | time   |
 |---------------------------------|-------------------|--------------|---------|---------|--------|
-| R-FCN, ResNet-v1-101            | VOC 07+12 trainval| VOC 07 test  | 79.6    | 63.1    | 0.16s |
-| Deformable R-FCN, ResNet-v1-101 | VOC 07+12 trainval| VOC 07 test  | 82.3    | 67.8    | 0.19s |
+| R-FCN, ResNet-v1-101            | VOC 07+12 trainval| VOC 07 test  | 79.6    | 63.1    | 0.16s |
+| Deformable R-FCN, ResNet-v1-101 | VOC 07+12 trainval| VOC 07 test  | 82.3    | 67.8    | 0.19s |
 
 
 
@@ -63,22 +63,22 @@ If you find Deformable ConvNets useful in your research, please consider citing:
 | <sub>Deformable R-FCN, ResNet-v1-101</sub> | <sub>coco trainval</sub> | <sub>coco test-dev</sub> | 35.7 | 56.8    | 38.3    | 15.2  | 38.8  | 51.5  |
 
 
-*Running time is counted on a single Maxwell Titan X GPU. Only one image is forwarded at each time*
+*Running time is counted on a single Maxwell Titan X GPU (mini-batch size is 1 in inference).*
 
 ## Requirements: Software
 
-1. Python packages you might not have: cython, opencv-python >= 3.2.0, easydict. If you have `pip` set up on your system, you should be able to fetch those packages from PyPI and install them using (for example)
+1. Python packages might missing: cython, opencv-python >= 3.2.0, easydict. If `pip` is set up on your system, those packages should be able to be fetched and installed by running
 	```
 	pip install Cython
 	pip install opencv-python==3.2.0.6
 	pip install easydict==1.6
 	```
-2. For Windows users, you need Visual Studio 2015 to compile cython module.
+2. For Windows users, Visual Studio 2015 is needed to compile cython module.
 
 
 ## Requirements: Hardware
 
-Any NVIDIA GPU with at least 4 GB of memory suffices.
+Any NVIDIA GPUs with at least 4GB memory should be OK.
 
 ## Installation
 
@@ -86,21 +86,21 @@ Any NVIDIA GPU with at least 4 GB of memory suffices.
 ~~~
 git clone https://github.com/msracver/Deformable-ConvNets.git
 ~~~
-2. For Windows user, run ``cmd .\init.bat``, for Linux user, run `sh ./init.sh`, it will build cython module automatically and add some folder.
-3. Copy operators in `./rfcn/operator_cxx` to `$(YOUR_MXNET_FOLDER)/src/operator/contrib` and recompile your MXNet
-4. You can either install your MXNet, or if you are an advance user, you can put your Python packge to `./external/mxnet/$(YOUR_MXNET_PACKAGE)`, and modify `MXNET_VERSION` in `./experiments/rfcn/cfgs/*.yaml` to `$(YOUR_MXNET_PACKAGE)`, it will help you switch your MXNet version quickly.
+2. For Windows user, run ``cmd .\init.bat``, for Linux user, run `sh ./init.sh`. The scripts will build cython module automatically and create some folders.
+3. Copy operators in `./rfcn/operator_cxx` to `$(YOUR_MXNET_FOLDER)/src/operator/contrib` and recompile MXNet.
+4. Please install MXNet following the official guide of MXNet. For advanced users, you may put your Python packge to `./external/mxnet/$(YOUR_MXNET_PACKAGE)`, and modify `MXNET_VERSION` in `./experiments/rfcn/cfgs/*.yaml` to `$(YOUR_MXNET_PACKAGE)`, then you can switch among different versions of MXNet quickly.
 
 
 ## Demo
 
-1. To use the demo with our trained model (on MSCOCO trainval dataset), please download the model manually from [OneDrive](https://1drv.ms/u/s!AoN7vygOjLIQqmE7XqFVLbeZDfVN), and put it under `model/`.
+1. To use the demo with our trained model (on COCO trainval), please download the model manually from [OneDrive](https://1drv.ms/u/s!AoN7vygOjLIQqmE7XqFVLbeZDfVN), and put it under folder `model/`.
 
 	Make sure it looks like this:
 	```
 	./model/rfcn_dcn_coco-0000.params
 	./model/rfcn_coco-0000.params
 	```
-2. To run the demo
+2. To run the demo, run
 	```
 	python ./rfcn/demo.py
 	```
@@ -111,12 +111,12 @@ git clone https://github.com/msracver/Deformable-ConvNets.git
 	
 
 
-We will release the visualizaiton tool which could visualize deformation effect soon.
+We will release the visualizaiton tool which visualizes the deformation effects soon.
 
 
 ## Preparation for Training & Testing
 
-1. Please download COCO and VOC 2007/2012 dataset, and make sure it looks like this:
+1. Please download COCO and VOC 2007+2012 dataset, and make sure it looks like this:
 
 	```
 	./data/coco/
@@ -124,27 +124,27 @@ We will release the visualizaiton tool which could visualize deformation effect 
 	./data/VOCdevkit/VOC2012/
 	```
 
-2. Please download ImageNet pretrained ResNet-v1-101 model manually from [OneDrive](https://1drv.ms/u/s!Am-5JzdW2XHzhqMEtxf1Ciym8uZ8sg), and put it under `./model`. Make sure it looks like this:
+2. Please download ImageNet-pretrained ResNet-v1-101 model manually from [OneDrive](https://1drv.ms/u/s!Am-5JzdW2XHzhqMEtxf1Ciym8uZ8sg), and put it under folder `./model`. Make sure it looks like this:
 	```
 	./model/pretrained_model/resnet_v1_101-0000.params
 	```
 
 ## Usage
 
-1. We kept all of our experiments settings in a yaml file (#GPUs, dataset, etc.), you can find it in `./experiments/rfcn/cfgs`, you can check it by yourself.
-2. We have provided 4 cfgs (and would provide more), R-FCN for COCO/VOC and Deformable R-FCN for COCO/VOC. We use 8 and 4 GPUs to train models on COCO and on VOC, respectively. You can modify the GPU number in config files.
+1. All of our experiments settings (#GPUs, dataset, etc.) are kept in yaml files under folder `./experiments/rfcn/cfgs`.
+2. Four config files have been provided so far, namely, R-FCN for COCO/VOC and Deformable R-FCN for COCO/VOC, respectively. We use 8 and 4 GPUs to train models on COCO and on VOC, respectively. You can modify the GPU numbers in the config files.
 3. To perform experiments, run the py scripts with the corresponding config file as input. As an example, to train and test deformable convnets on COCO with ResNet-v1-101, use the following command
     ```
     python experiments\rfcn\rfcn_end2end_train_test.py --cfg experiments\rfcn\cfgs\resnet_v1_101_coco_trainval_rfcn_dcn_end2end_ohem.yaml
     ```
     A cache folder would be created automatically to save the model and the log under `output/rfcn_dcn_coco/`
-4. Please find more details in config files and our code.
+4. Please find more details in config files and in our code.
 
 ## Misc.
 
-We suggest you use a MXNet w/o CuDNN build
+MXNet build without CuDNN is recommended.
 
-We have tested our code on:
+Code has been tested under:
 
 - Ubuntu 14.04 with a Maxwell Titan X GPU and Intel Xeon CPU E5-2620 v2 @ 2.10GHz
 - Windows Server 2012 R2 with 8 K40 GPUs and Intel Xeon CPU E5-2650 v2 @ 2.60Ghz
