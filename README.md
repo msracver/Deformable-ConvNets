@@ -67,13 +67,15 @@ If you find Deformable ConvNets useful in your research, please consider citing:
 
 ## Requirements: Software
 
-1. Python packages might missing: cython, opencv-python >= 3.2.0, easydict. If `pip` is set up on your system, those packages should be able to be fetched and installed by running
+1. MXNet from [offical repository](https://github.com/dmlc/mxnet)
+
+2. Python packages might missing: cython, opencv-python >= 3.2.0, easydict. If `pip` is set up on your system, those packages should be able to be fetched and installed by running
 	```
 	pip install Cython
 	pip install opencv-python==3.2.0.6
 	pip install easydict==1.6
 	```
-2. For Windows users, Visual Studio 2015 is needed to compile cython module.
+3. For Windows users, Visual Studio 2015 is needed to compile cython module.
 
 
 ## Requirements: Hardware
