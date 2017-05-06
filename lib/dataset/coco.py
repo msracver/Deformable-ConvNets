@@ -16,6 +16,7 @@ from utils.tictoc import tic, toc
 from bbox.bbox_transform import clip_boxes
 import multiprocessing as mp
 
+
 def coco_results_one_category_kernel(data_pack):
     cat_id = data_pack['cat_id']
     ann_type = data_pack['ann_type']
@@ -56,26 +57,6 @@ def coco_results_one_category_kernel(data_pack):
         cat_results.extend(result)
     return cat_results
 
-def generate_cache_seg_inst_kernel(annWithObjs):
-    """
-    generate cache_seg_inst
-    :param annWithObjs: tuple of anns and objs
-    """
-    ann = annWithObjs[0]
-    objs = annWithObjs[1]
-    gt_mask_file = ann['cache_seg_inst']
-    if not gt_mask_file:
-        return
-    gt_mask_flip_file = os.path.join(os.path.splitext(gt_mask_file)[0] + '_flip.hkl')
-    if os.path.exists(gt_mask_file) and os.path.exists(gt_mask_flip_file):
-        return
-    gt_mask_encode = [x['segmentation'] for x in objs]
-    gt_mask = mask_coco2voc(gt_mask_encode, ann['height'], ann['width'])
-    if not os.path.exists(gt_mask_file):
-        hkl.dump(gt_mask.astype('bool'), gt_mask_file, mode='w', compression='gzip')
-    # cache flip gt_masks
-    if not os.path.exists(gt_mask_flip_file):
-        hkl.dump(gt_mask[:, :, ::-1].astype('bool'), gt_mask_flip_file, mode='w', compression='gzip')
 
 class coco(IMDB):
     def __init__(self, image_set, root_path, data_path, result_path=None, mask_size=-1, binary_thresh=None):
@@ -144,40 +125,6 @@ class coco(IMDB):
         print 'wrote gt roidb to {}'.format(cache_file)
 
         return gt_roidb
-
-    def gt_sdsdb(self):
-        """
-        :return:
-        """
-        cache_file = os.path.join(self.cache_path, self.name + '_gt_sdsdb.pkl')
-        """
-        if os.path.exists(cache_file):
-            with open(cache_file, 'rb') as fid:
-                sdsdb = cPickle.load(fid)
-            print '{} gt sdsdb loaded from {}'.format(self.name, cache_file)
-            return sdsdb
-        """
-        # for internal useage
-        tic();
-        gt_sdsdb_temp = [self.load_coco_sds_annotation(index) for index in self.image_set_index]
-        gt_sdsdb = [x[0] for x in gt_sdsdb_temp]
-        print 'prepare gt_sdsdb using', toc(), 'seconds';
-        #objs = [x[1] for x in gt_sdsdb_temp]
-        tic();
-        generate_cache_seg_inst_kernel(gt_sdsdb_temp[0])
-        pool = mp.Pool(mp.cpu_count())
-        pool.map(generate_cache_seg_inst_kernel, gt_sdsdb_temp)
-        pool.close()
-        pool.join()
-        print 'generate cache_seg_inst using', toc(), 'seconds';
-
-        """
-        with open(cache_file, 'wb') as fid:
-            cPickle.dump(gt_sdsdb, fid, cPickle.HIGHEST_PROTOCOL)
-        """
-        # for future release usage
-        # need to implement load sbd data
-        return gt_sdsdb
 
     def _load_coco_annotation(self, index):
         """

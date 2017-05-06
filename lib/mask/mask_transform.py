@@ -6,24 +6,6 @@
 # --------------------------------------------------------
 
 import numpy as np
-import os
-import cv2
-
-
-
-def get_gt_masks(gt_mask_file, size):
-    """
-    This function load cached gt_masks from .hkl
-    :param roidb:
-    :return:
-    """
-    assert os.path.exists(gt_mask_file), '%s does not exist'.format(gt_mask_file)
-    gt_masks = hkl.load(gt_mask_file)
-    num_mask = gt_masks.shape[0]
-    processed_masks = np.zeros((num_mask, size[0], size[1]))
-    for i in range(num_mask):
-        processed_masks[i,:,:] = cv2.resize(gt_masks[i].astype('float'), (size[1], size[0]))
-    return processed_masks
 
 
 def intersect_box_mask(ex_box, gt_box, gt_mask):
