@@ -67,7 +67,7 @@ If you find Deformable ConvNets useful in your research, please consider citing:
 
 ## Requirements: Software
 
-1. MXNet from [offical repository](https://github.com/dmlc/mxnet)
+1. MXNet from [offical repository](https://github.com/dmlc/mxnet). We tested our code on [MXNet@(commit 62ecb60)](https://github.com/dmlc/mxnet/tree/62ecb60). Due to the rapid development of MXNet, it is recommended to checkout this version if you have any problems. We may maintain this repository periodically if MXNet adds important feature in future release.
 
 2. Python packages might missing: cython, opencv-python >= 3.2.0, easydict. If `pip` is set up on your system, those packages should be able to be fetched and installed by running
 	```
