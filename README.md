@@ -144,8 +144,6 @@ We will release the visualizaiton tool which visualizes the deformation effects 
 
 ## Misc.
 
-MXNet build without CuDNN is recommended.
-
 Code has been tested under:
 
 - Ubuntu 14.04 with a Maxwell Titan X GPU and Intel Xeon CPU E5-2620 v2 @ 2.10GHz
