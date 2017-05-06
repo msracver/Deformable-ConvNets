@@ -1,6 +1,6 @@
 ---
 MXNET_VERSION: "mxnet"
-output_path: "./output/dcn_rfcn/voc"
+output_path: "./output/rfcn_dcn/voc"
 symbol: resnet_v1_101_rfcn_dcn
 gpus: '0,1,2,3'
 CLASS_AGNOSTIC: true
