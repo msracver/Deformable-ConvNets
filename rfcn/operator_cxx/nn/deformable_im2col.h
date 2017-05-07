@@ -48,18 +48,18 @@
  *
  ***************** END Caffe Copyright Notice and Disclaimer ********************
  *
- * Copyright (c) 2017 by Contributors
+ * Copyright (c) 2017 Microsoft
+ * Licensed under The Apache-2.0 License [see LICENSE for details]
  * \file deformable_im2col.h
  * \brief Function definitions of converting an image to
- * column matrix based on kernel, padding, and dilation.
- * These functions are mainly used in convolution operators.
- * The implementation of the im2col and col2im algorithms
- * are copied from Caffe with minor interface modifications
- * adapting to MXNet data structures.
+ * column matrix based on kernel, padding, dilation, and offset.
+ * These functions are mainly used in deformable convolution operators.
+ * \ref: https://arxiv.org/abs/1703.06211
+ * \author Yuwen Xiong, Haozhi Qi, Jifeng Dai
  */
 
-#ifndef MXNET_OPERATOR_NN_CONTRIB_DEFORMABLE_IM2COL_H_
-#define MXNET_OPERATOR_NN_CONTRIB_DEFORMABLE_IM2COL_H_
+#ifndef MXNET_OPERATOR_CONTRIB_NN_DEFORMABLE_IM2COL_H_
+#define MXNET_OPERATOR_CONTRIB_NN_DEFORMABLE_IM2COL_H_
 
 #include <mxnet/base.h>
 #include <mxnet/operator.h>
@@ -70,16 +70,19 @@
 namespace mxnet {
 namespace op {
 
-/*!
- * \brief cpu function of im2col algorithm
- * \param data_im pointer of a image (C, H, W,...) in the image batch
+/*!\brief 
+ * cpu function of deformable_im2col algorithm
+ * \param s device stream
+ * \param data_im pointer of an image (C, H, W, ...) in the image batch
+ * \param data_offset pointer of offset (C, H, W, ...) in the offset batch
  * \param im_shape input image shape in dimensions (N, C, H, W,)
- * \param col_shape column buffer shape
+ * \param col_shape column buffer shape (#channels, output_im_height, output_im_width, ...)
  * \param kernel_shape kernel filter shape
  * \param pad pad shape
  * \param stride stride shape
  * \param dilation dilation shape
- * \param data_col start pointer of the column buffer to be filled
+ * \param deformable_group #offset group that deformable convolution use
+ * \param data_col column buffer pointer
  */
 template <typename DType>
 inline void deformable_im2col(mshadow::Stream<cpu>* s,
@@ -96,17 +99,17 @@ inline void deformable_im2col(mshadow::Stream<cpu>* s,
 
 
 /*!\brief
- * cpu function of col2im algorithm
+ * cpu function of deformable_col2im algorithm
  * \param s device stream
  * \param data_col start pointer of the column buffer to be filled
- * \param data_im start pointer of the image data
- * \param data_offset start pointer of the offset data
+ * \param data_offset pointer of offset (C, H, W, ...) in the offset batch
  * \param im_shape input image shape in dimensions (N, C, H, W,)
  * \param col_shape column buffer shape
  * \param kernel_shape kernel filter shape
  * \param pad pad shape
  * \param stride stride shape
  * \param dilation dilation shape
+ * \param deformable_group #offset group that deformable convolution use
  * \param grad_im pointer of a image (C, H, W,...) in the image batch
  */
 template <typename DType>
@@ -120,6 +123,22 @@ inline void deformable_col2im(mshadow::Stream<cpu>* s,
   LOG(FATAL) << "not implemented";
 }
 
+
+/*!\brief
+ * cpu function of deformable_col2im_coord algorithm
+ * \param s device stream
+ * \param data_col start pointer of the column buffer to be filled
+ * \param data_im pointer of an image (C, H, W, ...) in the image batch
+ * \param data_offset pointer of offset (C, H, W, ...) in the offset batch
+ * \param im_shape input image shape in dimensions (N, C, H, W,)
+ * \param col_shape column buffer shape
+ * \param kernel_shape kernel filter shape
+ * \param pad pad shape
+ * \param stride stride shape
+ * \param dilation dilation shape
+ * \param deformable_group #offset group that deformable convolution use
+ * \param grad_offset pointer of the offset (C, H, W,...) in the offset batch
+ */
 
 template <typename DType>
 inline void deformable_col2im_coord(mshadow::Stream<cpu>* s,
@@ -135,4 +154,4 @@ inline void deformable_col2im_coord(mshadow::Stream<cpu>* s,
 #ifdef __CUDACC__
 #include "./deformable_im2col.cuh"
 #endif
-#endif  // MXNET_OPERATOR_NN_DEFORMABLE_IM2COL_H_
+#endif  // MXNET_OPERATOR_CONTRIB_NN_DEFORMABLE_IM2COL_H_

@@ -18,7 +18,6 @@ Operator* CreateOp<cpu>(DeformableConvolutionParam param, int dtype,
                         std::vector<TShape> *out_shape,
                         Context ctx) {
   Operator *op = NULL;
-  // If 1D convolution, use MXNet implementation
   MSHADOW_REAL_TYPE_SWITCH(dtype, DType, {
     op = new DeformableConvolutionOp<cpu, DType>(param);
   })
@@ -76,38 +75,8 @@ along the first dimension. Next compute the convolution on the *i*-th part of
 the data with the *i*-th weight part. The output is obtained by concating all
 the *g* results.
 
-1-D convolution does not have *height* dimension but only *width* in space.
-
-- **data**: *(batch_size, channel, width)*
-- **weight**: *(num_filter, channel, kernel[0])*
-- **bias**: *(num_filter,)*
-- **out**: *(batch_size, num_filter, out_width)*.
-
-3-D convolution adds an additional *depth* dimension besides *height* and
-*width*. The shapes are
-
-- **data**: *(batch_size, channel, depth, height, width)*
-- **weight**: *(num_filter, channel, kernel[0], kernel[1], kernel[2])*
-- **bias**: *(num_filter,)*
-- **out**: *(batch_size, num_filter, out_depth, out_height, out_width)*.
-
 Both ``weight`` and ``bias`` are learnable parameters.
 
-There are other options to tune the performance.
-
-- **cudnn_tune**: enable this option leads to higher startup time but may give
-  faster speed. Options are
-
-  - **off**: no tuning
-  - **limited_workspace**:run test and pick the fastest algorithm that doesn't
-    exceed workspace limit.
-  - **fastest**: pick the fastest algorithm and ignore workspace limit.
-  - **None** (default): the behavior is determined by environment variable
-    ``MXNET_CUDNN_AUTOTUNE_DEFAULT``. 0 for off, 1 for limited workspace
-    (default), 2 for fastest.
-
-- **workspace**: A large number leads to more (GPU) memory usage but may improve
-  the performance.
 
 )code" ADD_FILELINE)
 .add_argument("data", "NDArray-or-Symbol", "Input data to the DeformableConvolutionOp.")

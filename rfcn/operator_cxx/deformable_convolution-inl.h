@@ -189,9 +189,6 @@ namespace mxnet {
         Tensor<xpu, 1, DType> data_grad = in_grad[conv::kData].FlatTo1D<xpu, DType>(s);
         data_grad = 0;
 
-        //Tensor<xpu, 1, DType> coord_grad = in_grad[conv::kOffset].FlatTo1D<xpu, DType>(s);
-        //coord_grad = 1;
-
 
         for (index_t n = 0; n < num_; ++n) {
           Tensor<xpu, 3, DType> out_grad_3d = out_grad_4d[n];

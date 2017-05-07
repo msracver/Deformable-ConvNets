@@ -48,18 +48,18 @@
  *
  ***************** END Caffe Copyright Notice and Disclaimer ********************
  *
- * Copyright (c) 2017 by Contributors
- * \file deformable_im2col.cuh
+ * Copyright (c) 2017 Microsoft
+ * Licensed under The Apache-2.0 License [see LICENSE for details]
+ * \file deformable_im2col.h
  * \brief Function definitions of converting an image to
- * column matrix based on kernel, padding, and dilation.
- * These functions are mainly used in convolution operators.
- * The implementation of the im2col and col2im algorithms
- * are copied from Caffe with minor interface modifications
- * adapting to MXNet data structures.
+ * column matrix based on kernel, padding, dilation, and offset.
+ * These functions are mainly used in deformable convolution operators.
+ * \ref: https://arxiv.org/abs/1703.06211
+ * \author Yuwen Xiong, Haozhi Qi, Jifeng Dai
  */
 
-#ifndef MXNET_OPERATOR_NN_CONTRIB_DEFORMABLE_IM2COL_CUH_
-#define MXNET_OPERATOR_NN_CONTRIB_DEFORMABLE_IM2COL_CUH_
+#ifndef MXNET_OPERATOR_CONTRIB_NN_DEFORMABLE_IM2COL_CUH_
+#define MXNET_OPERATOR_CONTRIB_NN_DEFORMABLE_IM2COL_CUH_
 
 #include <mxnet/base.h>
 #include <mxnet/operator.h>
@@ -209,7 +209,7 @@ __device__ DType get_coordinate_weight(DType argmax_h, DType argmax_w,
 
 
 /*!
- * \brief im2col gpu kernel.
+ * \brief deformable_im2col gpu kernel.
  * DO NOT call this directly. Use wrapper function im2col() instead;
  */
 template <typename DType>
@@ -266,14 +266,18 @@ __global__ void deformable_im2col_gpu_kernel(const int n, const DType* data_im, 
 
 
 
-/*!\brief im2col gpu version
+/*!\brief
+ * cpu function of deformable_im2col algorithm
  * \param s device stream
  * \param data_im pointer of an image (C, H, W, ...) in the image batch
+ * \param data_offset pointer of offset (C, H, W, ...) in the offset batch
+ * \param im_shape input image shape in dimensions (N, C, H, W,)
  * \param col_shape column buffer shape (#channels, output_im_height, output_im_width, ...)
  * \param kernel_shape kernel filter shape
  * \param pad pad shape
  * \param stride stride shape
  * \param dilation dilation shape
+ * \param deformable_group #offset group that deformable convolution use
  * \param data_col column buffer pointer
  */
 template <typename DType>
@@ -306,6 +310,7 @@ inline void deformable_im2col(mshadow::Stream<gpu>* s,
 
 
 /*!
+* \brief deformable_col2im gpu kernel.
 * \brief DO NOT call this directly. Use wrapper function deformable_col2im() instead;
 */
 template <typename DType>
@@ -360,16 +365,18 @@ __global__ void deformable_col2im_gpu_kernel(const int n, const DType* data_col,
 
 
 /*!\brief
- * gpu function of col2im algorithm
+ * gpu function of deformable_col2im algorithm
  * \param s device stream
  * \param data_col start pointer of the column buffer to be filled
+ * \param data_offset pointer of offset (C, H, W, ...) in the offset batch
  * \param im_shape input image shape in dimensions (N, C, H, W,)
  * \param col_shape column buffer shape
  * \param kernel_shape kernel filter shape
  * \param pad pad shape
  * \param stride stride shape
  * \param dilation dilation shape
- * \param data_im pointer of a image (C, H, W,...) in the image batch
+ * \param deformable_group #offset group that deformable convolution use
+ * \param grad_im pointer of a image (C, H, W,...) in the image batch
  */
 template <typename DType>
 inline void deformable_col2im(mshadow::Stream<gpu>* s,
@@ -405,8 +412,9 @@ inline void deformable_col2im(mshadow::Stream<gpu>* s,
 
 
 /*!
-* \brief DO NOT call this directly. Use wrapper function deformable_col2im_coord() instead;
-*/
+ * \brief deformable_col2im_coord gpu kernel.
+ * \brief DO NOT call this directly. Use wrapper function deformable_col2im_coord() instead;
+ */
 template <typename DType>
 __global__ void deformable_col2im_coord_gpu_kernel(const int n, const DType* data_col, 
   const DType* data_im, const DType* data_offset,
@@ -464,7 +472,21 @@ __global__ void deformable_col2im_coord_gpu_kernel(const int n, const DType* dat
   }
 }
 
-
+/*!\brief
+ * gpu function of deformable_col2im_coord algorithm
+ * \param s device stream
+ * \param data_col start pointer of the column buffer to be filled
+ * \param data_im pointer of an image (C, H, W, ...) in the image batch
+ * \param data_offset pointer of offset (C, H, W, ...) in the offset batch
+ * \param im_shape input image shape in dimensions (N, C, H, W,)
+ * \param col_shape column buffer shape
+ * \param kernel_shape kernel filter shape
+ * \param pad pad shape
+ * \param stride stride shape
+ * \param dilation dilation shape
+ * \param deformable_group #offset group that deformable convolution use
+ * \param grad_offset pointer of the offset (C, H, W,...) in the offset batch
+ */
 template <typename DType>
 inline void deformable_col2im_coord(mshadow::Stream<gpu>* s,
   const DType* data_col, const DType* data_im, const DType* data_offset, const TShape& im_shape,
@@ -500,4 +522,4 @@ inline void deformable_col2im_coord(mshadow::Stream<gpu>* s,
 }  // namespace op
 }  // namespace mxnet
 
-#endif  // MXNET_OPERATOR_NN_IM2COL_CUH_
+#endif  // MXNET_OPERATOR_CONTRIB_NN_DEFORMABLE_IM2COL_CUH_
