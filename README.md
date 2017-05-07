@@ -133,7 +133,7 @@ We will release the visualizaiton tool which visualizes the deformation effects 
 
 ## Usage
 
-1. All of our experiment settings (GPU #, dataset, etc.) are kept in yaml files at folder `./experiments/rfcn/cfgs`.
+1. All of our experiment settings (GPU #, dataset, etc.) are kept in yaml config files at folder `./experiments/rfcn/cfgs`.
 2. Four config files have been provided so far, namely, R-FCN for COCO/VOC and Deformable R-FCN for COCO/VOC, respectively. We use 8 and 4 GPUs to train models on COCO and on VOC, respectively.
 3. To perform experiments, run the python scripts with the corresponding config file as input. For example, to train and test deformable convnets on COCO with ResNet-v1-101, use the following command
     ```
