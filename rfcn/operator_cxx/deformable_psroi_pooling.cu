@@ -75,12 +75,12 @@ namespace mshadow {
         int n = index / pooled_width / pooled_height / output_dim;
 
         // [start, end) interval for spatial sampling
-        bottom_rois += n * 5;
-        int roi_batch_ind = bottom_rois[0];
-        DType roi_start_w = static_cast<DType>(round(bottom_rois[1])) * spatial_scale - 0.5;
-        DType roi_start_h = static_cast<DType>(round(bottom_rois[2])) * spatial_scale - 0.5;
-        DType roi_end_w = static_cast<DType>(round(bottom_rois[3]) + 1.) * spatial_scale - 0.5;
-        DType roi_end_h = static_cast<DType>(round(bottom_rois[4]) + 1.) * spatial_scale - 0.5;
+        const DType* offset_bottom_rois = bottom_rois + n * 5;
+        int roi_batch_ind = offset_bottom_rois[0];
+        DType roi_start_w = static_cast<DType>(round(offset_bottom_rois[1])) * spatial_scale - 0.5;
+        DType roi_start_h = static_cast<DType>(round(offset_bottom_rois[2])) * spatial_scale - 0.5;
+        DType roi_end_w = static_cast<DType>(round(offset_bottom_rois[3]) + 1.) * spatial_scale - 0.5;
+        DType roi_end_h = static_cast<DType>(round(offset_bottom_rois[4]) + 1.) * spatial_scale - 0.5;
 
         // Force too small ROIs to be 1x1
         DType roi_width = max(roi_end_w - roi_start_w, 0.1); //avoid 0
@@ -115,7 +115,7 @@ namespace mshadow {
         gw = min(max(gw, 0), group_size - 1);
         gh = min(max(gh, 0), group_size - 1);
 
-        bottom_data += (roi_batch_ind * channels) * height * width;
+        const DType* offset_bottom_data = bottom_data + (roi_batch_ind * channels) * height * width;
         for (int ih = 0; ih < sample_per_part; ih++) {
           for (int iw = 0; iw < sample_per_part; iw++) {
             DType w = wstart + iw*sub_bin_size_w;
@@ -127,7 +127,7 @@ namespace mshadow {
             w = min(max(w, 0.), width - 1.);
             h = min(max(h, 0.), height - 1.);
             int c = (ctop*group_size + gh)*group_size + gw;
-            DType val = bilinear_interp(bottom_data + c*height*width, w, h, width, height);
+            DType val = bilinear_interp(offset_bottom_data + c*height*width, w, h, width, height);
             sum += val;
             count++;
           }
@@ -206,12 +206,12 @@ namespace mshadow {
         int n = index / pooled_width / pooled_height / output_dim;
 
         // [start, end) interval for spatial sampling
-        bottom_rois += n * 5;
-        int roi_batch_ind = bottom_rois[0];
-        DType roi_start_w = static_cast<DType>(round(bottom_rois[1])) * spatial_scale - 0.5;
-        DType roi_start_h = static_cast<DType>(round(bottom_rois[2])) * spatial_scale - 0.5;
-        DType roi_end_w = static_cast<DType>(round(bottom_rois[3]) + 1.) * spatial_scale - 0.5;
-        DType roi_end_h = static_cast<DType>(round(bottom_rois[4]) + 1.) * spatial_scale - 0.5;
+        const DType* offset_bottom_rois = bottom_rois + n * 5;
+        int roi_batch_ind = offset_bottom_rois[0];
+        DType roi_start_w = static_cast<DType>(round(offset_bottom_rois[1])) * spatial_scale - 0.5;
+        DType roi_start_h = static_cast<DType>(round(offset_bottom_rois[2])) * spatial_scale - 0.5;
+        DType roi_end_w = static_cast<DType>(round(offset_bottom_rois[3]) + 1.) * spatial_scale - 0.5;
+        DType roi_end_h = static_cast<DType>(round(offset_bottom_rois[4]) + 1.) * spatial_scale - 0.5;
 
         // Force too small ROIs to be 1x1
         DType roi_width = max(roi_end_w - roi_start_w, 0.1); //avoid 0
@@ -243,8 +243,8 @@ namespace mshadow {
           continue;
         }
         DType diff_val = top_diff[index] / top_count[index];
-        bottom_data += roi_batch_ind * channels * height * width;
-        bottom_data_diff += roi_batch_ind * channels * height * width;
+        const DType* offset_bottom_data = bottom_data + roi_batch_ind * channels * height * width;
+        DType* offset_bottom_data_diff = bottom_data_diff + roi_batch_ind * channels * height * width;
         int gw = floor(static_cast<DType>(pw)* group_size / pooled_width);
         int gh = floor(static_cast<DType>(ph)* group_size / pooled_height);
         gw = min(max(gw, 0), group_size - 1);
@@ -271,21 +271,19 @@ namespace mshadow {
             DType q01 = (1 - dist_x)*dist_y;
             DType q10 = dist_x*(1 - dist_y);
             DType q11 = dist_x*dist_y;
-            DType* offset_bottom_data_diff = bottom_data_diff + c * height * width;
-            // mxnet_gpu_atomic_add(diff_val, offset_bottom_diff + bottom_index);
-            atomicAdd(offset_bottom_data_diff + y0*width + x0, q00*diff_val);
-            atomicAdd(offset_bottom_data_diff + y1*width + x0, q01*diff_val);
-            atomicAdd(offset_bottom_data_diff + y0*width + x1, q10*diff_val);
-            atomicAdd(offset_bottom_data_diff + y1*width + x1, q11*diff_val);
+            int bottom_index_base = c * height *width;
+            atomicAdd(offset_bottom_data_diff + bottom_index_base + y0*width + x0, q00*diff_val);
+            atomicAdd(offset_bottom_data_diff + bottom_index_base + y1*width + x0, q01*diff_val);
+            atomicAdd(offset_bottom_data_diff + bottom_index_base + y0*width + x1, q10*diff_val);
+            atomicAdd(offset_bottom_data_diff + bottom_index_base + y1*width + x1, q11*diff_val);
 
             if (no_trans) {
               continue;
             }
-            const DType* offset_bottom_data = bottom_data + c * height * width;
-            DType U00 = offset_bottom_data[y0*width + x0];
-            DType U01 = offset_bottom_data[y1*width + x0];
-            DType U10 = offset_bottom_data[y0*width + x1];
-            DType U11 = offset_bottom_data[y1*width + x1];
+            DType U00 = offset_bottom_data[bottom_index_base + y0*width + x0];
+            DType U01 = offset_bottom_data[bottom_index_base + y1*width + x0];
+            DType U10 = offset_bottom_data[bottom_index_base + y0*width + x1];
+            DType U11 = offset_bottom_data[bottom_index_base + y1*width + x1];
             DType diff_x = (U11*dist_y + U10*(1 - dist_y) - U01*dist_y - U00*(1 - dist_y))
               *trans_std*diff_val;
             diff_x *= roi_width;

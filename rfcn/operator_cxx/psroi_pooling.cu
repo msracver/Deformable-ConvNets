@@ -49,12 +49,12 @@ __global__ void PSROIPoolForwardKernel(
     int n = index / pooled_width / pooled_height / output_dim;
 
     // [start, end) interval for spatial sampling
-    bottom_rois += n * 5;
-    int roi_batch_ind = bottom_rois[0];
-    DType roi_start_w = static_cast<DType>(round(bottom_rois[1])) * spatial_scale;
-    DType roi_start_h = static_cast<DType>(round(bottom_rois[2])) * spatial_scale;
-    DType roi_end_w = static_cast<DType>(round(bottom_rois[3]) + 1.) * spatial_scale;
-    DType roi_end_h = static_cast<DType>(round(bottom_rois[4]) + 1.) * spatial_scale;
+    const DType* offset_bottom_rois = bottom_rois + n * 5;
+    int roi_batch_ind = offset_bottom_rois[0];
+    DType roi_start_w = static_cast<DType>(round(offset_bottom_rois[1])) * spatial_scale;
+    DType roi_start_h = static_cast<DType>(round(offset_bottom_rois[2])) * spatial_scale;
+    DType roi_end_w = static_cast<DType>(round(offset_bottom_rois[3]) + 1.) * spatial_scale;
+    DType roi_end_h = static_cast<DType>(round(offset_bottom_rois[4]) + 1.) * spatial_scale;
 
     // Force too small ROIs to be 1x1
     DType roi_width = max(roi_end_w - roi_start_w, 0.1); //avoid 0
@@ -85,12 +85,12 @@ __global__ void PSROIPoolForwardKernel(
     gh = min(max(gh, 0), group_size - 1);
     int c = (ctop*group_size + gh)*group_size + gw;
 
-    bottom_data += (roi_batch_ind * channels + c) * height * width;
+    const DType* offset_bottom_data = bottom_data + (roi_batch_ind * channels + c) * height * width;
     DType out_sum = 0;
     for (int h = hstart; h < hend; ++h){
       for (int w = wstart; w < wend; ++w){
         int bottom_index = h*width + w;
-        out_sum += bottom_data[bottom_index];
+        out_sum += offset_bottom_data[bottom_index];
       }
     }
 
@@ -148,12 +148,12 @@ __global__ void PSROIPoolBackwardAccKernel(
     int n = index / pooled_width / pooled_height / output_dim;
 
     // [start, end) interval for spatial sampling
-    bottom_rois += n * 5;
-    int roi_batch_ind = bottom_rois[0];
-    DType roi_start_w = static_cast<DType>(round(bottom_rois[1])) * spatial_scale;
-    DType roi_start_h = static_cast<DType>(round(bottom_rois[2])) * spatial_scale;
-    DType roi_end_w = static_cast<DType>(round(bottom_rois[3]) + 1.) * spatial_scale;
-    DType roi_end_h = static_cast<DType>(round(bottom_rois[4]) + 1.) * spatial_scale;
+    const DType* offset_bottom_rois = bottom_rois + n * 5;
+    int roi_batch_ind = offset_bottom_rois[0];
+    DType roi_start_w = static_cast<DType>(round(offset_bottom_rois[1])) * spatial_scale;
+    DType roi_start_h = static_cast<DType>(round(offset_bottom_rois[2])) * spatial_scale;
+    DType roi_end_w = static_cast<DType>(round(offset_bottom_rois[3]) + 1.) * spatial_scale;
+    DType roi_end_h = static_cast<DType>(round(offset_bottom_rois[4]) + 1.) * spatial_scale;
 
     // Force too small ROIs to be 1x1
     DType roi_width = max(roi_end_w - roi_start_w, 0.1); //avoid 0
