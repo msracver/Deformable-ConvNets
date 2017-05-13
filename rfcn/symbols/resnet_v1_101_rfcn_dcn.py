@@ -934,53 +934,26 @@ class resnet_v1_101_rfcn_dcn(Symbol):
         relu1 = self.get_resnet_v1_conv5(conv_feat)
 
         # conv_new_1
-        conv_new_1_weight = mx.symbol.Variable('conv_new_1_weight', lr_mult=3.0)
-        conv_new_1_bias = mx.symbol.Variable('conv_new_1_bias', lr_mult=6.0)
-        conv_new_1 = mx.sym.Convolution(data=relu1, kernel=(1, 1), num_filter=1024, name="conv_new_1",
-                                        weight=conv_new_1_weight, bias=conv_new_1_bias)
+        conv_new_1 = mx.sym.Convolution(data=relu1, kernel=(1, 1), num_filter=1024, name="conv_new_1", lr_mult=3.0)
         relu_new_1 = mx.sym.Activation(data=conv_new_1, act_type='relu', name='relu1')
 
         # rfcn_cls/rfcn_bbox
-        rfcn_cls_weight = mx.symbol.Variable('rfcn_cls_weight', lr_mult=1.0)
-        rfcn_cls_bias = mx.symbol.Variable('rfcn_cls_bias', lr_mult=2.0)
-        rfcn_cls = mx.sym.Convolution(data=relu_new_1, kernel=(1, 1), num_filter=7 * 7 * num_classes, name="rfcn_cls",
-                                      weight=rfcn_cls_weight, bias=rfcn_cls_bias)
-        rfcn_bbox_weight = mx.symbol.Variable('rfcn_bbox_weight', lr_mult=1.0)
-        rfcn_bbox_bias = mx.symbol.Variable('rfcn_bbox_bias', lr_mult=2.0)
-        rfcn_bbox = mx.sym.Convolution(data=relu_new_1, kernel=(1, 1), num_filter=7 * 7 * 4 * num_reg_classes,
-                                       name="rfcn_bbox",
-                                       weight=rfcn_bbox_weight, bias=rfcn_bbox_bias)
+        rfcn_cls = mx.sym.Convolution(data=relu_new_1, kernel=(1, 1), num_filter=7*7*num_classes, name="rfcn_cls")
+        rfcn_bbox = mx.sym.Convolution(data=relu_new_1, kernel=(1, 1), num_filter=7*7*4*num_reg_classes, name="rfcn_bbox")
         # trans_cls / trans_cls
-        rfcn_cls_offset_t_weight = mx.symbol.Variable('rfcn_cls_offset_t_weight', lr_mult=1.0)
-        rfcn_cls_offset_t_bias = mx.symbol.Variable('rfcn_cls_offset_t_bias', lr_mult=2.0)
-        rfcn_cls_offset_t = mx.sym.Convolution(data=relu_new_1, kernel=(1, 1), num_filter=2 * 7 * 7 * num_classes,
-                                               name="rfcn_cls_offset_t",
-                                               weight=rfcn_cls_offset_t_weight, bias=rfcn_cls_offset_t_bias)
-        rfcn_bbox_offset_t_weight = mx.symbol.Variable('rfcn_bbox_offset_t_weight', lr_mult=1.0)
-        rfcn_bbox_offset_t_bias = mx.symbol.Variable('rfcn_bbox_offset_t_bias', lr_mult=2.0)
-        rfcn_bbox_offset_t = mx.sym.Convolution(data=relu_new_1, kernel=(1, 1), num_filter=7 * 7 * 2,
-                                                name="rfcn_bbox_offset_t",
-                                                weight=rfcn_bbox_offset_t_weight, bias=rfcn_bbox_offset_t_bias)
+        rfcn_cls_offset_t = mx.sym.Convolution(data=relu_new_1, kernel=(1, 1), num_filter=2 * 7 * 7 * num_classes, name="rfcn_cls_offset_t")
+        rfcn_bbox_offset_t = mx.sym.Convolution(data=relu_new_1, kernel=(1, 1), num_filter=7 * 7 * 2, name="rfcn_bbox_offset_t")
 
-        rfcn_cls_offset = mx.contrib.sym.DeformablePSROIPooling(name='rfcn_cls_offset', data=rfcn_cls_offset_t,
-                                                                rois=rois, group_size=7, pooled_size=7,
-                                                                sample_per_part=4, no_trans=True, part_size=7,
-                                                                output_dim=2 * num_classes, spatial_scale=0.0625)
-        rfcn_bbox_offset = mx.contrib.sym.DeformablePSROIPooling(name='rfcn_bbox_offset', data=rfcn_bbox_offset_t,
-                                                                 rois=rois, group_size=7, pooled_size=7,
-                                                                 sample_per_part=4, no_trans=True, part_size=7,
-                                                                 output_dim=2, spatial_scale=0.0625)
+        rfcn_cls_offset = mx.contrib.sym.DeformablePSROIPooling(name='rfcn_cls_offset', data=rfcn_cls_offset_t, rois=rois, group_size=7, pooled_size=7,
+                                                                sample_per_part=4, no_trans=True, part_size=7, output_dim=2 * num_classes, spatial_scale=0.0625)
+        rfcn_bbox_offset = mx.contrib.sym.DeformablePSROIPooling(name='rfcn_bbox_offset', data=rfcn_bbox_offset_t, rois=rois, group_size=7, pooled_size=7,
+                                                                 sample_per_part=4, no_trans=True, part_size=7, output_dim=2, spatial_scale=0.0625)
 
-        psroipooled_cls_rois = mx.contrib.sym.DeformablePSROIPooling(name='psroipooled_cls_rois', data=rfcn_cls,
-                                                                     rois=rois, trans=rfcn_cls_offset,
-                                                                     group_size=7, pooled_size=7, sample_per_part=4,
-                                                                     no_trans=False, trans_std=0.1,
-                                                                     output_dim=num_classes, spatial_scale=0.0625,
-                                                                     part_size=7)
-        psroipooled_loc_rois = mx.contrib.sym.DeformablePSROIPooling(name='psroipooled_loc_rois', data=rfcn_bbox,
-                                                                     rois=rois, trans=rfcn_bbox_offset,
-                                                                     group_size=7, pooled_size=7, sample_per_part=4,
-                                                                     no_trans=False, trans_std=0.1,
+        psroipooled_cls_rois = mx.contrib.sym.DeformablePSROIPooling(name='psroipooled_cls_rois', data=rfcn_cls, rois=rois, trans=rfcn_cls_offset,
+                                                                     group_size=7, pooled_size=7, sample_per_part=4, no_trans=False, trans_std=0.1,
+                                                                     output_dim=num_classes, spatial_scale=0.0625, part_size=7)
+        psroipooled_loc_rois = mx.contrib.sym.DeformablePSROIPooling(name='psroipooled_loc_rois', data=rfcn_bbox, rois=rois, trans=rfcn_bbox_offset,
+                                                                     group_size=7, pooled_size=7, sample_per_part=4, no_trans=False, trans_std=0.1,
                                                                      output_dim=8, spatial_scale=0.0625, part_size=7)
         cls_score = mx.sym.Pooling(name='ave_cls_scors_rois', data=psroipooled_cls_rois, pool_type='avg', global_pool=True, kernel=(7, 7))
         bbox_pred = mx.sym.Pooling(name='ave_bbox_pred_rois', data=psroipooled_loc_rois, pool_type='avg', global_pool=True, kernel=(7, 7))
