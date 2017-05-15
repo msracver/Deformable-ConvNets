@@ -1,3 +1,11 @@
+# --------------------------------------------------------
+# Deformable Convolutional Networks
+# Copyright (c) 2016 by Contributors
+# Copyright (c) 2017 Microsoft
+# Licensed under The Apache-2.0 License [see LICENSE for details]
+# Written by Zheng Zhang
+# --------------------------------------------------------
+
 import cPickle
 import os
 import cv2
@@ -6,9 +14,8 @@ import itertools
 
 from imdb import IMDB
 from PIL import Image
-from utils import image
 
-class CityScape_Segmentation(IMDB):
+class CityScape(IMDB):
     def __init__(self, image_set, root_path, dataset_path, result_path=None):
         """
         fill basic information to initialize imdb
@@ -18,7 +25,7 @@ class CityScape_Segmentation(IMDB):
         :return: imdb object
         """
         image_set_main_folder, image_set_sub_folder= image_set.split('_', 1)
-        super(CityScape_Segmentation, self).__init__('cityscape', image_set, root_path, dataset_path, result_path)  # set self.name
+        super(CityScape, self).__init__('cityscape', image_set, root_path, dataset_path, result_path)  # set self.name
 
         self.image_set_main_folder = image_set_main_folder
         self.image_set_sub_folder = image_set_sub_folder
@@ -170,12 +177,8 @@ class CityScape_Segmentation(IMDB):
         :return: the evaluation results
         """
 
-        res_file_folder = os.path.join(self.result_path, 'results', 'Segmentation')
-        if not os.path.exists(res_file_folder):
-            os.mkdir(res_file_folder)
-
-        info = self.do_python_eval(segmentations)
-        self.write_segmentation_result(segmentations, res_file_folder)
+        info = self._py_evaluate_segmentation(segmentations)
+        self.write_segmentation_result(segmentations)
         return info
 
 
@@ -199,7 +202,7 @@ class CityScape_Segmentation(IMDB):
 
         return confusion_matrix
 
-    def do_python_eval(self, pred_segmentations):
+    def _py_evaluate_segmentation(self, pred_segmentations):
         """
         This function is a wrapper to calculte the metrics for given pred_segmentation results
         :param pred_segmentations: the pred segmentation result
@@ -212,7 +215,6 @@ class CityScape_Segmentation(IMDB):
             seg_pred = np.squeeze(pred_segmentations[i])
 
             seg_pred = cv2.resize(seg_pred, (seg_gt.shape[1], seg_gt.shape[0]), interpolation=cv2.INTER_NEAREST)
-            seg_gt[seg_gt == 0] = 255
             ignore_index = seg_gt != 255
             seg_gt = seg_gt[ignore_index]
             seg_pred = seg_pred[ignore_index]
@@ -228,17 +230,32 @@ class CityScape_Segmentation(IMDB):
 
         return {'meanIU':mean_IU, 'IU_array':IU_array}
 
-    def write_segmentation_result(self, segmentation_results, result_file_folder):
+    def write_segmentation_result(self, segmentation_results):
         """
         Write the segmentation result to result_file_folder
         :param segmentation_results: the prediction result
         :param result_file_folder: the saving folder
         :return: [None]
         """
+        res_file_folder = os.path.join(self.result_path, 'results')
+        if not os.path.exists(res_file_folder):
+            os.mkdir(res_file_folder)
+
         pallete = self.getpallete(256)
-        for i in range(len(segmentation_results)):
+        for i, index in enumerate(self.image_set_index):
+            seg_gt_info = self.load_segdb_from_index(index)
+
+            seg_pathes = os.path.split(seg_gt_info['seg_cls_path'])
+            res_image_name = seg_pathes[1][:-len('_gtFine_labelTrainIds.png')]
+            res_subfolder_name = os.path.split(seg_pathes[0])[-1]
+            res_save_folder = os.path.join(res_file_folder, res_subfolder_name)
+            res_save_path = os.path.join(res_save_folder, res_image_name + '.png')
+
+            if not os.path.exists(res_save_folder):
+                os.makedirs(res_save_folder)
+
             segmentation_result = np.uint8(np.squeeze(np.copy(segmentation_results[i])))
             segmentation_result = Image.fromarray(segmentation_result)
             segmentation_result.putpalette(pallete)
-            segmentation_result.save(os.path.join(result_file_folder, '%d_result.png'%(i)))
+            segmentation_result.save(res_save_path)
 
