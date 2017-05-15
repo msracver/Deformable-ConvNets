@@ -23,7 +23,6 @@ This is an official implementation for [Deformable Convolutional Networks](https
   * The original implementation is based on our internal Caffe version on Windows. There are slight differences in the final accuracy and running time due to the plenty details in platform switch.
   * The code is tested on official [MXNet@(commit 62ecb60)](https://github.com/dmlc/mxnet/tree/62ecb60) with the extra operators for Deformable ConvNets.
   * We trained our model based on the ImageNet pre-trained [ResNet-v1-101](https://github.com/KaimingHe/deep-residual-networks) using a [model converter](https://github.com/dmlc/mxnet/tree/430ea7bfbbda67d993996d81c7fd44d3a20ef846/tools/caffe_converter). The converted model produces slightly lower accuracy (Top-1 Error on ImageNet val: 24.0% v.s. 23.6%).
-  * By now it only contains Deformable ConvNets with R-FCN. Deformable ConvNets with DeepLab will be released soon.
   * This repository used code from [MXNet rcnn example](https://github.com/dmlc/mxnet/tree/master/example/rcnn) and [mx-rfcn](https://github.com/giorking/mx-rfcn).
   
 ## License
@@ -61,6 +60,13 @@ If you find Deformable ConvNets useful in your research, please consider citing:
 |---------------------------------|---------------|---------------|------|---------|---------|-------|-------|-------|
 | <sub>R-FCN, ResNet-v1-101 </sub>           | <sub>coco trainval</sub> | <sub>coco test-dev</sub> | 32.1 | 54.3    |   33.8  | 12.8  | 34.9  | 46.1  | 
 | <sub>Deformable R-FCN, ResNet-v1-101</sub> | <sub>coco trainval</sub> | <sub>coco test-dev</sub> | 35.7 | 56.8    | 38.3    | 15.2  | 38.8  | 51.5  |
+
+|                                   | training data              | testing data   | mIoU | time  |
+|-----------------------------------|----------------------------|----------------|------|-------|
+| DeepLab, ResNet-v1-101            | Cityscapes train           | Cityscapes val | 70.3 | 0.510s |
+| Deformable DeepLab, ResNet-v1-101 | Cityscapes train           | Cityscapes val | 75.2 | 0.519s |
+| DeepLab, ResNet-v1-101            | VOC 2012 train (augmented) | VOC 2012 val   | 70.7 | 0.088s |
+| Deformable DeepLab, ResNet-v1-101 | VOC 2012 train (augmented) | VOC 2012 val   | 75.9 | 0.083s |
 
 
 *Running time is counted on a single Maxwell Titan X GPU (mini-batch size is 1 in inference).*
