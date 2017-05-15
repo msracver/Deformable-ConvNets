@@ -63,10 +63,10 @@ If you find Deformable ConvNets useful in your research, please consider citing:
 
 |                                   | training data              | testing data   | mIoU | time  |
 |-----------------------------------|----------------------------|----------------|------|-------|
-| DeepLab, ResNet-v1-101            | Cityscapes train           | Cityscapes val | 70.3 | 0.510s |
-| Deformable DeepLab, ResNet-v1-101 | Cityscapes train           | Cityscapes val | 75.2 | 0.519s |
-| DeepLab, ResNet-v1-101            | VOC 2012 train (augmented) | VOC 2012 val   | 70.7 | 0.088s |
-| Deformable DeepLab, ResNet-v1-101 | VOC 2012 train (augmented) | VOC 2012 val   | 75.9 | 0.083s |
+| DeepLab, ResNet-v1-101            | Cityscapes train           | Cityscapes val | 70.3 | 0.51s |
+| Deformable DeepLab, ResNet-v1-101 | Cityscapes train           | Cityscapes val | 75.2 | 0.52s |
+| DeepLab, ResNet-v1-101            | VOC 12 train (augmented) | VOC 12 val   | 70.7 | 0.08s |
+| Deformable DeepLab, ResNet-v1-101 | VOC 12 train (augmented) | VOC 12 val   | 75.9 | 0.08s |
 
 
 *Running time is counted on a single Maxwell Titan X GPU (mini-batch size is 1 in inference).*
