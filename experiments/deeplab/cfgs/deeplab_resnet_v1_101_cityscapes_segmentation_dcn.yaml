@@ -1,5 +1,5 @@
 ---
-MXNET_VERSION: "mxnet_de8be79"
+MXNET_VERSION: "mxnet"
 output_path: "./output/cityscape"
 symbol: Symbol_deeplab_resnet_v1_101_dcn
 gpus: '0,1,2,3'
@@ -47,7 +47,6 @@ TRAIN:
   warmup_lr: 0.00005
   # typically we will use 4000 warmup step for single GPU
   warmup_step: 1000
-  RESUME: false
   begin_epoch: 0
   end_epoch: 53
   lr: 0.0005

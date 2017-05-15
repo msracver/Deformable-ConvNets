@@ -51,7 +51,7 @@ TRAIN:
   end_epoch: 53
   lr: 0.0005
   lr_step: '40.336'
-  model_prefix: "deeplab_resnet_v1_101_cityscapes_segmentation_dcn"
+  model_prefix: "deeplab_resnet_v1_101_cityscapes_segmentation_base"
   # whether flip image
   FLIP: true
   # size of images for each device

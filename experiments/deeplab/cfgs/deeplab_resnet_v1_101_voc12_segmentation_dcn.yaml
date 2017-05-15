@@ -12,7 +12,7 @@ default:
 dataset:
   NUM_CLASSES: 21
   dataset: PascalVOC
-  dataset_path: "/./data/VOCdevkit2012/"
+  dataset_path: "./data/VOCdevkit2012/"
   image_set: 2012_train_seg
   root_path: "./data/VOCdevkit2012/"
   test_image_set: 2012_val_seg
