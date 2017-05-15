@@ -1,5 +1,5 @@
 ---
-MXNET_VERSION: "mxnet_de8be79"
+MXNET_VERSION: "mxnet"
 output_path: "./output/voc12"
 symbol: resnet_v1_101_deeplab_dcn
 gpus: '0'
@@ -12,9 +12,9 @@ default:
 dataset:
   NUM_CLASSES: 21
   dataset: PascalVOC
-  dataset_path: "//jifengdnn05/zhez/data/VOCdevkit2012/"
+  dataset_path: "./data/VOCdevkit2012/"
   image_set: 2012_train_seg
-  root_path: "//jifengdnn05/zhez/data/VOCdevkit2012/"
+  root_path: "./data/"
   test_image_set: 2012_val_seg
 network:
   FIXED_PARAMS:
