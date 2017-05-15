@@ -264,24 +264,16 @@ class PascalVOC(IMDB):
         info = self.do_python_eval()
         return info
 
-    def evaluate_segmentations(self, pred_segmentations):
+    def evaluate_segmentations(self, pred_segmentations=None):
         """
         top level evaluations
         :param pred_segmentations: the pred segmentation result
         :return: the evaluation results
         """
         # make all these folders for results
-        result_dir = os.path.join(self.result_path, 'results')
-        if not os.path.exists(result_dir):
-            os.mkdir(result_dir)
-        year_folder = os.path.join(self.result_path, 'results', 'VOC' + self.year)
-        if not os.path.exists(year_folder):
-            os.mkdir(year_folder)
-        res_file_folder = os.path.join(self.result_path, 'results', 'VOC' + self.year, 'Segmentation')
-        if not os.path.exists(res_file_folder):
-            os.mkdir(res_file_folder)
+        if not (pred_segmentations is None):
+            self.write_pascal_segmentation_result(pred_segmentations)
 
-        self.write_pascal_segmentation_result(pred_segmentations)
         info = self._py_evaluate_segmentation()
         return info
 
@@ -293,6 +285,16 @@ class PascalVOC(IMDB):
         :return: [None]
         """
         result_dir = os.path.join(self.result_path, 'results')
+        if not os.path.exists(result_dir):
+            os.mkdir(result_dir)
+        year_folder = os.path.join(self.result_path, 'results', 'VOC' + self.year)
+        if not os.path.exists(year_folder):
+            os.mkdir(year_folder)
+        res_file_folder = os.path.join(self.result_path, 'results', 'VOC' + self.year, 'Segmentation')
+        if not os.path.exists(res_file_folder):
+            os.mkdir(res_file_folder)
+
+        result_dir = os.path.join(self.result_path, 'results', 'VOC' + self.year, 'Segmentation')
         if not os.path.exists(result_dir):
             os.mkdir(result_dir)
 
@@ -353,7 +355,7 @@ class PascalVOC(IMDB):
         :return: the evaluation metrics
         """
         confusion_matrix = np.zeros((self.num_classes,self.num_classes))
-        result_dir = os.path.join(self.result_path, 'results')
+        result_dir = os.path.join(self.result_path, 'results', 'VOC' + self.year, 'Segmentation')
 
         for i, index in enumerate(self.image_set_index):
             seg_gt_info = self.load_pascal_segmentation_annotation(index)
