@@ -10,7 +10,7 @@ import cPickle
 import mxnet as mx
 from utils.symbol import Symbol
 
-class Symbol_deeplab_resnet_v1_101_dcn(Symbol):
+class resnet_v1_101_deeplab_dcn(Symbol):
     def __init__(self):
         """
         Use __init__ to define parameter network needs

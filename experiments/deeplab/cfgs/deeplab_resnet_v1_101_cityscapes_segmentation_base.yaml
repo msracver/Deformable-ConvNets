@@ -1,8 +1,8 @@
 ---
 MXNET_VERSION: "mxnet"
 output_path: "./output/cityscape"
-symbol: Symbol_deeplab_resnet_v1_101
-gpus: '0,1,2,3'
+symbol: resnet_v1_101_deeplab
+gpus: '0'
 SCALES:
 - 1024
 - 2048
@@ -14,7 +14,7 @@ dataset:
   dataset: CityScape
   dataset_path: "./data/cityscapes/"
   image_set: leftImg8bit_train
-  root_path: "./data/cityscapes/"
+  root_path: "./data/"
   test_image_set: leftImg8bit_val
 network:
   FIXED_PARAMS:
