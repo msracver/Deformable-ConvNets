@@ -97,18 +97,20 @@ git clone https://github.com/msracver/Deformable-ConvNets.git
 2. For Windows users, run ``cmd .\init.bat``. For Linux user, run `sh ./init.sh`. The scripts will build cython module automatically and create some folders.
 3. Copy operators in `./rfcn/operator_cxx` to `$(YOUR_MXNET_FOLDER)/src/operator/contrib` and recompile MXNet.
 4. Please install MXNet following the official guide of MXNet. For advanced users, you may put your Python packge into `./external/mxnet/$(YOUR_MXNET_PACKAGE)`, and modify `MXNET_VERSION` in `./experiments/rfcn/cfgs/*.yaml` to `$(YOUR_MXNET_PACKAGE)`. Thus you can switch among different versions of MXNet quickly.
-
+5. For Deeplab, we use the argumented VOC 2012 dataset. The argumented annotations are provided by [SBD](http://home.bharathh.info/pubs/codes/SBD/download.html) dataset. For convenience, we provide the converted PNG annotations and the list of training/validation images, please download them from [OneDrive](https://1drv.ms/u/s!Am-5JzdW2XHzhqMRhVImMI1jRrsxDg).
 
 ## Demo
 
-1. To use the demo with our trained model (on COCO trainval), please download the model manually from [OneDrive](https://1drv.ms/u/s!AoN7vygOjLIQqmE7XqFVLbeZDfVN), and put it under folder `model/`.
+1. To use the demo with our trained model (on COCO trainval), please download the model manually from [OneDrive](https://1drv.ms/u/s!Am-5JzdW2XHzhqMSjehIcCgAhvEAHw), and put it under folder `model/`.
 
 	Make sure it looks like this:
 	```
 	./model/rfcn_dcn_coco-0000.params
 	./model/rfcn_coco-0000.params
+	./model/deeplab_dcn_cityscapes-0000.params
+	./model/deeplab_cityscapes-0000.params
 	```
-2. To run the demo, run
+2. To run the R-FCN demo, run
 	```
 	python ./rfcn/demo.py
 	```
@@ -116,7 +118,14 @@ git clone https://github.com/msracver/Deformable-ConvNets.git
 	```
 	python ./rfcn/demo.py --rfcn_only
 	```
-	
+2. To run the DeepLab demo, run
+	```
+	python ./deeplab/demo.py
+	```
+	By default it will run Deformable Deeplab and gives several prediction results, to run DeepLab, use
+	```
+	python ./deeplab/demo.py --deeplab_only
+	```
 
 
 We will release the visualizaiton tool which visualizes the deformation effects soon.
@@ -124,6 +133,7 @@ We will release the visualizaiton tool which visualizes the deformation effects 
 
 ## Preparation for Training & Testing
 
+For R-FCN\:
 1. Please download COCO and VOC 2007+2012 dataset, and make sure it looks like this:
 
 	```
@@ -137,10 +147,30 @@ We will release the visualizaiton tool which visualizes the deformation effects 
 	./model/pretrained_model/resnet_v1_101-0000.params
 	```
 
+For DeepLab\:
+1. Please download Cityscapes and VOC 2012 datasets and make sure it looks like this:
+
+	```
+	./data/cityscapes/
+	./data/VOCdevkit/VOC2012/
+	```
+2. Please download argumented VOC 2012, and put the argumented annotations and the argumented training/validation list into:
+
+	```
+	./data/VOCdevkit/VOC2012/SegmentationClass/
+	./data/VOCdevkit/VOC2012/ImageSets/Main/
+	```
+   , Respectively.
+   
+2. Please download ImageNet-pretrained ResNet-v1-101 model manually from [OneDrive](https://1drv.ms/u/s!Am-5JzdW2XHzhqMEtxf1Ciym8uZ8sg), and put it under folder `./model`. Make sure it looks like this:
+	```
+	./model/pretrained_model/resnet_v1_101-0000.params
+	```
 ## Usage
 
-1. All of our experiment settings (GPU #, dataset, etc.) are kept in yaml config files at folder `./experiments/rfcn/cfgs`.
-2. Four config files have been provided so far, namely, R-FCN for COCO/VOC and Deformable R-FCN for COCO/VOC, respectively. We use 8 and 4 GPUs to train models on COCO and on VOC, respectively.
+1. All of our experiment settings (GPU #, dataset, etc.) are kept in yaml config files at folder `./experiments/rfcn/cfgs` and `./experiments/deeplab/cfgs/`.
+2. Eight config files have been provided so far, namely, R-FCN for COCO/VOC, Deformable R-FCN for COCO/VOC, Deeplab for Cityscapes/VOC and Deformable Deeplab for Cityscapes/VOC, respectively. We use 8 and 4 GPUs to train models on COCO and on VOC for R-FCN, respectively. For deeplab, we use 4 GPUs for all experiments.
+
 3. To perform experiments, run the python scripts with the corresponding config file as input. For example, to train and test deformable convnets on COCO with ResNet-v1-101, use the following command
     ```
     python experiments\rfcn\rfcn_end2end_train_test.py --cfg experiments\rfcn\cfgs\resnet_v1_101_coco_trainval_rfcn_dcn_end2end_ohem.yaml
