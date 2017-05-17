@@ -97,7 +97,7 @@ git clone https://github.com/msracver/Deformable-ConvNets.git
 2. For Windows users, run ``cmd .\init.bat``. For Linux user, run `sh ./init.sh`. The scripts will build cython module automatically and create some folders.
 3. Copy operators in `./rfcn/operator_cxx` to `$(YOUR_MXNET_FOLDER)/src/operator/contrib` and recompile MXNet.
 4. Please install MXNet following the official guide of MXNet. For advanced users, you may put your Python packge into `./external/mxnet/$(YOUR_MXNET_PACKAGE)`, and modify `MXNET_VERSION` in `./experiments/rfcn/cfgs/*.yaml` to `$(YOUR_MXNET_PACKAGE)`. Thus you can switch among different versions of MXNet quickly.
-5. For Deeplab, we use the argumented VOC 2012 dataset. The argumented annotations are provided by [SBD](http://home.bharathh.info/pubs/codes/SBD/download.html) dataset. For convenience, we provide the converted PNG annotations and the list of training/validation images, please download them from [OneDrive](https://1drv.ms/u/s!Am-5JzdW2XHzhqMRhVImMI1jRrsxDg).
+5. For Deeplab, we use the argumented VOC 2012 dataset. The argumented annotations are provided by [SBD](http://home.bharathh.info/pubs/codes/SBD/download.html) dataset. For convenience, we provide the converted PNG annotations and the lists of train/val images, please download them from [OneDrive](https://1drv.ms/u/s!Am-5JzdW2XHzhqMRhVImMI1jRrsxDg).
 
 ## Demo
 
@@ -154,7 +154,7 @@ For DeepLab\:
 	./data/cityscapes/
 	./data/VOCdevkit/VOC2012/
 	```
-2. Please download argumented VOC 2012 annotations/image list, and put the argumented annotations and the argumented train/val list into:
+2. Please download argumented VOC 2012 annotations/image lists, and put the argumented annotations and the argumented train/val lists into:
 
 	```
 	./data/VOCdevkit/VOC2012/SegmentationClass/
