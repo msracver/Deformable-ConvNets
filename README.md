@@ -109,6 +109,8 @@ git clone https://github.com/msracver/Deformable-ConvNets.git
 	./model/rfcn_coco-0000.params
 	./model/deeplab_dcn_cityscapes-0000.params
 	./model/deeplab_cityscapes-0000.params
+	./model/deform_conv-0000.params
+	./model/deform_psroi-0000.params
 	```
 2. To run the R-FCN demo, run
 	```
@@ -118,7 +120,7 @@ git clone https://github.com/msracver/Deformable-ConvNets.git
 	```
 	python ./rfcn/demo.py --rfcn_only
 	```
-2. To run the DeepLab demo, run
+3. To run the DeepLab demo, run
 	```
 	python ./deeplab/demo.py
 	```
@@ -126,9 +128,11 @@ git clone https://github.com/msracver/Deformable-ConvNets.git
 	```
 	python ./deeplab/demo.py --deeplab_only
 	```
-
-
-We will release the visualizaiton tool which visualizes the deformation effects soon.
+4. To visualize the offset of deformable convolution and deformable psroipooling, run
+	```
+	python ./rfcn/deform_conv_demo.py
+	python ./rfcn/defrom_psroi_demo.py
+	```
 
 
 ## Preparation for Training & Testing
