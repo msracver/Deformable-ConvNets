@@ -1,2 +1,2 @@
-import Symbol_deeplab_resnet_v1_101
-import Symbol_deeplab_resnet_v1_101_dcn
+import resnet_v1_101_deeplab
+import resnet_v1_101_deeplab_dcn

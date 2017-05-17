@@ -170,15 +170,16 @@ class CityScape(IMDB):
 
         return pallete
 
-    def evaluate_segmentations(self, segmentations):
+    def evaluate_segmentations(self, pred_segmentations = None):
         """
         top level evaluations
         :param pred_segmentations: the pred segmentation result
         :return: the evaluation results
         """
+        if not pred_segmentations:
+            self.write_segmentation_result(pred_segmentations)
 
-        info = self._py_evaluate_segmentation(segmentations)
-        self.write_segmentation_result(segmentations)
+        info = self._py_evaluate_segmentation()
         return info
 
 
@@ -202,17 +203,27 @@ class CityScape(IMDB):
 
         return confusion_matrix
 
-    def _py_evaluate_segmentation(self, pred_segmentations):
+    def _py_evaluate_segmentation(self):
         """
         This function is a wrapper to calculte the metrics for given pred_segmentation results
-        :param pred_segmentations: the pred segmentation result
         :return: the evaluation metrics
         """
+        res_file_folder = os.path.join(self.result_path, 'results')
+
         confusion_matrix = np.zeros((self.num_classes,self.num_classes))
         for i, index in enumerate(self.image_set_index):
             seg_gt_info = self.load_segdb_from_index(index)
+
             seg_gt = np.array(Image.open(seg_gt_info['seg_cls_path'])).astype('float32')
-            seg_pred = np.squeeze(pred_segmentations[i])
+
+            seg_pathes = os.path.split(seg_gt_info['seg_cls_path'])
+            res_image_name = seg_pathes[1][:-len('_gtFine_labelTrainIds.png')]
+            res_subfolder_name = os.path.split(seg_pathes[0])[-1]
+            res_save_folder = os.path.join(res_file_folder, res_subfolder_name)
+            res_save_path = os.path.join(res_save_folder, res_image_name + '.png')
+
+            seg_pred = np.array(Image.open(res_save_path)).astype('float32')
+            #seg_pred = np.squeeze(pred_segmentations[i])
 
             seg_pred = cv2.resize(seg_pred, (seg_gt.shape[1], seg_gt.shape[0]), interpolation=cv2.INTER_NEAREST)
             ignore_index = seg_gt != 255

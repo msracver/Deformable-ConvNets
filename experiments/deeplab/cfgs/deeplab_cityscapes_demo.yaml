@@ -1,7 +1,7 @@
 ---
-MXNET_VERSION: "mxnet_de8be79"
+MXNET_VERSION: "mxnet"
 output_path: "./output/cityscape"
-symbol: resnet_v1_101_deeplab_dcn
+symbol: resnet_v1_101_deeplab
 gpus: '0'
 SCALES:
 - 1024

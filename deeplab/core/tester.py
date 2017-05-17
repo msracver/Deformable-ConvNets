@@ -46,13 +46,10 @@ def pred_eval(predictor, test_data, imdb, vis=False, ignore_cache=None, logger=N
     :param logger: the logger instance
     :return:
     """
-
-
     res_file = os.path.join(imdb.result_path, imdb.name + '_segmentations.pkl')
     if os.path.exists(res_file) and not ignore_cache:
         with open(res_file , 'rb') as fid:
-            all_segmentation_result = cPickle.load(fid)
-        evaluation_results = imdb.evaluate_segmentations(all_segmentation_result)
+            evaluation_results = cPickle.load(fid)
         print 'evaluate segmentation: \n'
         if logger:
             logger.info('evaluate segmentation: \n')
@@ -79,6 +76,7 @@ def pred_eval(predictor, test_data, imdb, vis=False, ignore_cache=None, logger=N
     all_segmentation_result = [[] for _ in xrange(num_images)]
     idx = 0
 
+    data_time, net_time, post_time = 0.0, 0.0, 0.0
     t = time.time()
     for data_batch in test_data:
         t1 = time.time() - t
@@ -94,17 +92,19 @@ def pred_eval(predictor, test_data, imdb, vis=False, ignore_cache=None, logger=N
         t3 = time.time() - t
         t = time.time()
 
-        print 'testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, t1, t2, t3)
+        data_time += t1
+        net_time += t2
+        post_time += t3
+        print 'testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size)
         if logger:
-            logger.info('testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, t1, t2, t3))
+            logger.info('testing {}/{} data {:.4f}s net {:.4f}s post {:.4f}s'.format(idx, imdb.num_images, data_time / idx * test_data.batch_size, net_time / idx * test_data.batch_size, post_time / idx * test_data.batch_size))
 
+    evaluation_results = imdb.evaluate_segmentations(all_segmentation_result)
 
     if not os.path.exists(res_file) or ignore_cache:
         with open(res_file, 'wb') as f:
-            cPickle.dump(all_segmentation_result, f, protocol=cPickle.HIGHEST_PROTOCOL)
+            cPickle.dump(evaluation_results, f, protocol=cPickle.HIGHEST_PROTOCOL)
 
-
-    evaluation_results = imdb.evaluate_segmentations(all_segmentation_result)
     print 'evaluate segmentation: \n'
     if logger:
         logger.info('evaluate segmentation: \n')

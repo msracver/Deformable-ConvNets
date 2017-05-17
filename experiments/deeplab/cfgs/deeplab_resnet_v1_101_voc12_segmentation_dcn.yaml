@@ -1,8 +1,8 @@
 ---
 MXNET_VERSION: "mxnet"
-output_path: "./output/cityscape"
-symbol: Symbol_deeplab_resnet_v1_101_dcn
-gpus: '0,1,2,3'
+output_path: "./output/voc12"
+symbol: resnet_v1_101_deeplab_dcn
+gpus: '0'
 SCALES:
 - 360
 - 600
@@ -14,7 +14,7 @@ dataset:
   dataset: PascalVOC
   dataset_path: "./data/VOCdevkit2012/"
   image_set: 2012_train_seg
-  root_path: "./data/VOCdevkit2012/"
+  root_path: "./data/"
   test_image_set: 2012_val_seg
 network:
   FIXED_PARAMS:
