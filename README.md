@@ -134,7 +134,7 @@ We will release the visualizaiton tool which visualizes the deformation effects 
 ## Preparation for Training & Testing
 
 For R-FCN\:
-1. Please download COCO and VOC 2007+2012 dataset, and make sure it looks like this:
+1. Please download COCO and VOC 2007+2012 datasets, and make sure it looks like this:
 
 	```
 	./data/coco/
@@ -154,7 +154,7 @@ For DeepLab\:
 	./data/cityscapes/
 	./data/VOCdevkit/VOC2012/
 	```
-2. Please download argumented VOC 2012, and put the argumented annotations and the argumented training/validation list into:
+2. Please download argumented VOC 2012 annotations/image list, and put the argumented annotations and the argumented train/val list into:
 
 	```
 	./data/VOCdevkit/VOC2012/SegmentationClass/
