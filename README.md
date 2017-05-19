@@ -75,13 +75,15 @@ If you find Deformable ConvNets useful in your research, please consider citing:
 
 1. MXNet from [the offical repository](https://github.com/dmlc/mxnet). We tested our code on [MXNet@(commit 62ecb60)](https://github.com/dmlc/mxnet/tree/62ecb60). Due to the rapid development of MXNet, it is recommended to checkout this version if you encounter any issues. We may maintain this repository periodically if MXNet adds important feature in future release.
 
-2. Python packages might missing: cython, opencv-python >= 3.2.0, easydict. If `pip` is set up on your system, those packages should be able to be fetched and installed by running
+2. Python 2.7. We recommend using Anaconda2
+
+3. Python packages might missing: cython, opencv-python >= 3.2.0, easydict. If `pip` is set up on your system, those packages should be able to be fetched and installed by running
 	```
 	pip install Cython
 	pip install opencv-python==3.2.0.6
 	pip install easydict==1.6
 	```
-3. For Windows users, Visual Studio 2015 is needed to compile cython module.
+4. For Windows users, Visual Studio 2015 is needed to compile cython module.
 
 
 ## Requirements: Hardware
@@ -189,4 +191,22 @@ Code has been tested under:
 - Ubuntu 14.04 with a Maxwell Titan X GPU and Intel Xeon CPU E5-2620 v2 @ 2.10GHz
 - Windows Server 2012 R2 with 8 K40 GPUs and Intel Xeon CPU E5-2650 v2 @ 2.60GHz
 - Windows Server 2012 R2 with 4 Pascal Titan X GPUs and Intel Xeon CPU E5-2650 v4 @ 2.30GHz
+
+## FAQ
+
+Q: It says `AttributeError: 'module' object has no attribute 'DeformableConvolution'`.
+
+A: This is because either
+ - you forget to copy the operators to your MXNet folder
+ - or you copy to the wrong path
+ - or you forget to re-compile
+ - or you install the wrong MXNet
+
+Q: I encounter `segment fault` at the beginning.
+
+A: A compatibility issue has been identified between MXNet and opencv-python 3.0+. We suggest that you always `import cv2` first before `import mxnet` in the entry script. 
+
+Q: I find the training speed becomes slower when training for a long time.
+
+A: It has been identified that MXNet on Windows has this problem. So we recommend to run this program on Linux. You could also stop it and resume the training process to regain the training speed if you encounter this problem.
 
