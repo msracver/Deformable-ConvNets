@@ -202,11 +202,17 @@ A: This is because either
  - or you forget to re-compile
  - or you install the wrong MXNet
 
+<br/><br/>
 Q: I encounter `segment fault` at the beginning.
 
 A: A compatibility issue has been identified between MXNet and opencv-python 3.0+. We suggest that you always `import cv2` first before `import mxnet` in the entry script. 
 
+<br/><br/>
 Q: I find the training speed becomes slower when training for a long time.
 
 A: It has been identified that MXNet on Windows has this problem. So we recommend to run this program on Linux. You could also stop it and resume the training process to regain the training speed if you encounter this problem.
 
+<br/><br/>
+Q: Can you share your caffe implementation?
+
+A: Due to several reasons (code is based on a old, internal Caffe, port to public Caffe needs extra work, time limit, etc.). We do not plan to release our Caffe code. Since current MXNet convolution implementation is very similar to Caffe (almost the same), it is easy to port to Caffe by yourself, the core CUDA code could be kept unchanged. Anyone who wish to do it is welcome to make a pull request.
