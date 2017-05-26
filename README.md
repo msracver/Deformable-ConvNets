@@ -60,6 +60,10 @@ If you find Deformable ConvNets useful in your research, please consider citing:
 |---------------------------------|---------------|---------------|------|---------|---------|-------|-------|-------|
 | <sub>R-FCN, ResNet-v1-101 </sub>           | <sub>coco trainval</sub> | <sub>coco test-dev</sub> | 32.1 | 54.3    |   33.8  | 12.8  | 34.9  | 46.1  | 
 | <sub>Deformable R-FCN, ResNet-v1-101</sub> | <sub>coco trainval</sub> | <sub>coco test-dev</sub> | 35.7 | 56.8    | 38.3    | 15.2  | 38.8  | 51.5  |
+| <sub>Faster R-CNN, ResNet-v1-101 </sub>           | <sub>coco trainval</sub> | <sub>coco test-dev</sub> | 30.3 | 52.1    |   31.4  | 9.9  | 32.2  | 47.4  | 
+| <sub>Deformable Faster R-CNN, </br>ResNet-v1-101</sub> | <sub>coco trainval</sub> | <sub>coco test-dev</sub> | 35.0 | 55.0    | 38.3    | 14.3  | 37.7  | 52.0  |
+
+
 
 |                                   | training data              | testing data   | mIoU | time  |
 |-----------------------------------|----------------------------|----------------|------|-------|
