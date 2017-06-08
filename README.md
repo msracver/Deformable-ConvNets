@@ -107,7 +107,7 @@ git clone https://github.com/msracver/Deformable-ConvNets.git
 
 ## Demo & Deformable Model
 
-We provide trained deformable convnet models, including deformable R-FCN & Faster R-CNN trained on COCO trainval, and deformable DeepLab models trained on CityScapes train.
+We provide trained deformable convnet models, including deformable R-FCN & Faster R-CNN models trained on COCO trainval, and deformable DeepLab model trained on CityScapes train.
 
 1. To use the demo with our pre-trained deformable models, please download manually from [OneDrive](https://1drv.ms/u/s!Am-5JzdW2XHzhqMSjehIcCgAhvEAHw), and put it under folder `model/`.
 
