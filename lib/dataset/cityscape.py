@@ -176,7 +176,7 @@ class CityScape(IMDB):
         :param pred_segmentations: the pred segmentation result
         :return: the evaluation results
         """
-        if not pred_segmentations:
+        if not (pred_segmentations is None):
             self.write_segmentation_result(pred_segmentations)
 
         info = self._py_evaluate_segmentation()
