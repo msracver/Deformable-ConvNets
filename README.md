@@ -147,7 +147,7 @@ We provide trained deformable convnet models, including the deformable R-FCN & F
 
 ## Preparation for Training & Testing
 
-For R-FCN\:
+For R-FCN/Faster R-CNN\:
 1. Please download COCO and VOC 2007+2012 datasets, and make sure it looks like this:
 
 	```
@@ -182,8 +182,8 @@ For DeepLab\:
 	```
 ## Usage
 
-1. All of our experiment settings (GPU #, dataset, etc.) are kept in yaml config files at folder `./experiments/rfcn/cfgs` and `./experiments/deeplab/cfgs/`.
-2. Eight config files have been provided so far, namely, R-FCN for COCO/VOC, Deformable R-FCN for COCO/VOC, Deeplab for Cityscapes/VOC and Deformable Deeplab for Cityscapes/VOC, respectively. We use 8 and 4 GPUs to train models on COCO and on VOC for R-FCN, respectively. For deeplab, we use 4 GPUs for all experiments.
+1. All of our experiment settings (GPU #, dataset, etc.) are kept in yaml config files at folder `./experiments/rfcn/cfgs`, `./experiments/faster_rcnn/cfgs` and `./experiments/deeplab/cfgs/`.
+2. Eight config files have been provided so far, namely, R-FCN for COCO/VOC, Deformable R-FCN for COCO/VOC, Faster R-CNN(2fc) for COCO/VOC, Deformable Faster R-CNN(2fc) for COCO/VOC, Deeplab for Cityscapes/VOC and Deformable Deeplab for Cityscapes/VOC, respectively. We use 8 and 4 GPUs to train models on COCO and on VOC for R-FCN, respectively. For deeplab, we use 4 GPUs for all experiments.
 
 3. To perform experiments, run the python scripts with the corresponding config file as input. For example, to train and test deformable convnets on COCO with ResNet-v1-101, use the following command
     ```
