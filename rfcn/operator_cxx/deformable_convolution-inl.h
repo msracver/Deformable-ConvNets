@@ -189,9 +189,6 @@ namespace mxnet {
         Tensor<xpu, 1, DType> data_grad = in_grad[conv::kData].FlatTo1D<xpu, DType>(s);
         data_grad = 0;
 
-        //Tensor<xpu, 1, DType> coord_grad = in_grad[conv::kOffset].FlatTo1D<xpu, DType>(s);
-        //coord_grad = 1;
-
 
         for (index_t n = 0; n < num_; ++n) {
           Tensor<xpu, 3, DType> out_grad_3d = out_grad_4d[n];
@@ -268,7 +265,7 @@ namespace mxnet {
         col_buffer_size_ = kernel_dim_ * group_ * conv_out_spatial_dim_;
         // input/output image size (#channels * height * width)
         input_dim_ = ishape.ProdShape(1, ishape.ndim());
-				input_offset_dim_ = ishape.ProdShape(1, offset_shape.ndim());
+        input_offset_dim_ = offset_shape.ProdShape(1, offset_shape.ndim());
         output_dim_ = oshape.ProdShape(1, oshape.ndim());
         num_kernels_im2col_ = conv_in_channels_ * conv_out_spatial_dim_;
         num_kernels_col2im_ = input_dim_;

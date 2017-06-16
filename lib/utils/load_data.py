@@ -12,17 +12,6 @@ def load_gt_roidb(dataset_name, image_set_name, root_path, dataset_path, result_
     return roidb
 
 
-def load_gt_sdsdb(dataset_name, image_set_name, root_path, dataset_path,
-                  result_path=None, flip=False, mask_size=21, binary_thresh=0.4):
-    """ load ground truth sdsdb """
-    imdb = eval(dataset_name)(image_set_name, root_path, dataset_path, result_path,
-                              mask_size=mask_size, binary_thresh=binary_thresh)
-    sdsdb = imdb.gt_sdsdb()
-    if flip:
-        sdsdb = imdb.append_flipped_images(sdsdb)
-    return sdsdb
-
-
 def load_proposal_roidb(dataset_name, image_set_name, root_path, dataset_path, result_path=None,
                         proposal='rpn', append_gt=True, flip=False):
     """ load proposal roidb (append_gt when training) """
@@ -61,6 +50,7 @@ def filter_roidb(roidb, config):
 
     return filtered_roidb
 
+
 def load_gt_segdb(dataset_name, image_set_name, root_path, dataset_path, result_path=None,
                   flip=False):
     """ load ground truth segdb """
@@ -69,6 +59,7 @@ def load_gt_segdb(dataset_name, image_set_name, root_path, dataset_path, result_
     if flip:
         segdb = imdb.append_flipped_images_for_segmentation(segdb)
     return segdb
+
 
 def merge_segdb(segdbs):
     """ segdb are list, concat them together """
