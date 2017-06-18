@@ -8,6 +8,7 @@
 											  
 import _init_paths
 
+import cv2
 import time
 import argparse
 import logging
