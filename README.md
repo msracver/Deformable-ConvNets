@@ -98,16 +98,40 @@ Any NVIDIA GPUs with at least 4GB memory should be OK.
 
 ## Installation
 
-1. Clone the Deformable ConvNets repository
-~~~
+1. Clone the Deformable ConvNets repository, and we'll call the directory that you cloned Deformable-ConvNets as ${DCN_ROOT}.
+```
 git clone https://github.com/msracver/Deformable-ConvNets.git
-~~~
-2. For Windows users, run ``cmd .\init.bat``. For Linux user, run `sh ./init.sh`. The scripts will build cython module automatically and create some folders.
-3. Copy operators in `./rfcn/operator_cxx` to `$(YOUR_MXNET_FOLDER)/src/operator/contrib` and recompile MXNet.
+```
 
-	3.1. After [MXNet@(commit ce2bca6)](https://github.com/dmlc/mxnet/tree/ce2bca6) the offical MXNet support all operators for Deformable ConvNets. You do not need to copy operators and recompile MXNet if you use MXNet after this version.
-4. Please install MXNet following the official guide of MXNet. For advanced users, you may put your Python packge into `./external/mxnet/$(YOUR_MXNET_PACKAGE)`, and modify `MXNET_VERSION` in `./experiments/rfcn/cfgs/*.yaml` to `$(YOUR_MXNET_PACKAGE)`. Thus you can switch among different versions of MXNet quickly.
-5. For Deeplab, we use the argumented VOC 2012 dataset. The argumented annotations are provided by [SBD](http://home.bharathh.info/pubs/codes/SBD/download.html) dataset. For convenience, we provide the converted PNG annotations and the lists of train/val images, please download them from [OneDrive](https://1drv.ms/u/s!Am-5JzdW2XHzhqMRhVImMI1jRrsxDg).
+2. For Windows users, run ``cmd .\init.bat``. For Linux user, run `sh ./init.sh`. The scripts will build cython module automatically and create some folders.
+
+3. Install MXNet:
+
+	3.1 Clone MXNet and checkout to [MXNet@(commit 62ecb60)](https://github.com/dmlc/mxnet/tree/62ecb60) by
+	```
+	git clone --recursive https://github.com/dmlc/mxnet.git
+	git checkout 62ecb60
+	git submodule update
+	```
+	3.2 Copy operators in `$(DCN_ROOT)/rfcn/operator_cxx` or `$(DCN_ROOT)/faster_rcnn/operator_cxx` to `$(YOUR_MXNET_FOLDER)/src/operator/contrib` by
+	```
+	cp -r $(DCN_ROOT)/rfcn/operator_cxx/* $(MXNET_ROOT)/src/operator/contrib/
+	```
+	3.3 Compile MXNet
+	```
+	cd ${MXNET_ROOT}
+	make -j4
+	```
+	3.4 Install the MXNet Python binding by
+	
+	***Note: If you will actively switch between different versions of MXNet, please follow 3.5 instead of 3.4***
+	```
+	cd python
+	sudo python setup.py install
+	```
+	3.5 For advanced users, you may put your Python packge into `./external/mxnet/$(YOUR_MXNET_PACKAGE)`, and modify `MXNET_VERSION` in `./experiments/rfcn/cfgs/*.yaml` to `$(YOUR_MXNET_PACKAGE)`. Thus you can switch among different versions of MXNet quickly.
+
+4. For Deeplab, we use the argumented VOC 2012 dataset. The argumented annotations are provided by [SBD](http://home.bharathh.info/pubs/codes/SBD/download.html) dataset. For convenience, we provide the converted PNG annotations and the lists of train/val images, please download them from [OneDrive](https://1drv.ms/u/s!Am-5JzdW2XHzhqMRhVImMI1jRrsxDg).
 
 ## Demo & Deformable Model
 
