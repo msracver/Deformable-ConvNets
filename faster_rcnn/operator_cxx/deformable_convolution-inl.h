@@ -212,6 +212,11 @@ namespace mxnet {
             req[conv::kData]);
 
           // gradient w.r.t. weight, dWeight should accumulate across the batch and group
+          deformable_im2col(s, in_data[conv::kData].dptr<DType>() + n*input_dim_, 
+            in_data[conv::kOffset].dptr<DType>() + n*input_offset_dim_, in_data[conv::kData].shape_,
+            col_buffer.shape_, param_.kernel, param_.pad, param_.stride, param_.dilate, param_.num_deformable_group,
+            col_buffer.dptr<DType>());
+          
           im2col(s, in_data[conv::kData].dptr<DType>() + n*input_dim_, in_data[conv::kData].shape_,
             col_buffer.shape_, param_.kernel, param_.pad, param_.stride, param_.dilate,
             col_buffer.dptr<DType>());
