@@ -120,7 +120,7 @@ git clone https://github.com/msracver/Deformable-ConvNets.git
 	3.3 Compile MXNet
 	```
 	cd ${MXNET_ROOT}
-	make -j4
+	make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_CUDA=1 USE_CUDA_PATH=/usr/local/cuda USE_CUDNN=1
 	```
 	3.4 Install the MXNet Python binding by
 	
