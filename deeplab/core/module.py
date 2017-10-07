@@ -20,6 +20,7 @@ from mxnet.initializer import Uniform, InitDesc
 from mxnet.module.base_module import BaseModule, _check_input_names, _parse_data_desc, _as_list
 from mxnet.model import _create_kvstore, _initialize_kvstore, _update_params, _update_params_on_kvstore, load_checkpoint, BatchEndParam
 from mxnet import metric
+# from mxnet.module.executor_group import DataParallelExecutorGroup
 
 from .DataParallelExecutorGroup import DataParallelExecutorGroup
 from mxnet import ndarray as nd
@@ -229,7 +230,7 @@ class Module(BaseModule):
         return (self._arg_params, self._aux_params)
 
     def init_params(self, initializer=Uniform(0.01), arg_params=None, aux_params=None,
-                    allow_missing=False, force_init=False):
+                    allow_missing=False, force_init=False, allow_extra=False):
         """Initialize the parameters and auxiliary states.
 
         Parameters
@@ -385,7 +386,6 @@ class Module(BaseModule):
             shared_group = shared_module._exec_group
         else:
             shared_group = None
-
         self._exec_group = DataParallelExecutorGroup(self._symbol, self._context,
                                                      self._work_load_list, self._data_shapes,
                                                      self._label_shapes, self._param_names,
@@ -569,7 +569,7 @@ class Module(BaseModule):
         if self._update_on_kvstore:
             _update_params_on_kvstore(self._exec_group.param_arrays,
                                       self._exec_group.grad_arrays,
-                                      self._kvstore)
+                                      self._kvstore, self._exec_group.param_names)
         else:
             _update_params(self._exec_group.param_arrays,
                            self._exec_group.grad_arrays,
@@ -780,7 +780,7 @@ class MutableModule(BaseModule):
         return self._curr_module.get_params()
 
     def init_params(self, initializer=Uniform(0.01), arg_params=None, aux_params=None,
-                    allow_missing=False, force_init=False):
+                    allow_missing=False, force_init=False, allow_extra=False):
         if self.params_initialized and not force_init:
             return
         assert self.binded, 'call bind before initializing the parameters'
@@ -837,7 +837,7 @@ class MutableModule(BaseModule):
         module = Module(self._symbol, self._data_names, self._label_names, logger=self.logger,
                         context=self._context, work_load_list=self._work_load_list,
                         fixed_param_names=self._fixed_param_names)
-        module.bind([max_data_shapes for _ in xrange(len(self._context))], [max_label_shapes for _ in xrange(len(self._context))],
+        module.bind([max_data_shapes for _ in range(len(self._context))], [max_label_shapes for _ in range(len(self._context))],
                     for_training, inputs_need_grad, force_rebind=False, shared_module=None)
         self._curr_module = module
 
@@ -879,7 +879,7 @@ class MutableModule(BaseModule):
             eval_batch_end_callback=None, initializer=Uniform(0.01),
             arg_params=None, aux_params=None, allow_missing=False,
             force_rebind=False, force_init=False, begin_epoch=0, num_epoch=None,
-            validation_metric=None, monitor=None, prefix=None):
+            validation_metric=None, monitor=None, prefix=None, state=None):
         """Train the module parameters.
 
         Parameters
@@ -952,6 +952,8 @@ class MutableModule(BaseModule):
                          allow_missing=allow_missing, force_init=force_init)
         self.init_optimizer(kvstore=kvstore, optimizer=optimizer,
                             optimizer_params=optimizer_params)
+        if state is not None:
+            self._curr_module.load_optimizer_states(state)
 
         if validation_metric is None:
             validation_metric = eval_metric
@@ -1014,15 +1016,15 @@ class MutableModule(BaseModule):
 
         # get current_shapes
         if self._curr_module.label_shapes is not None:
-            current_shapes = [dict(self._curr_module.data_shapes[i] + self._curr_module.label_shapes[i]) for i in xrange(len(self._context))]
+            current_shapes = [dict(self._curr_module.data_shapes[i] + self._curr_module.label_shapes[i]) for i in range(len(self._context))]
         else:
-            current_shapes = [dict(self._curr_module.data_shapes[i]) for i in xrange(len(self._context))]
+            current_shapes = [dict(self._curr_module.data_shapes[i]) for i in range(len(self._context))]
 
         # get input_shapes
         if is_train:
-            input_shapes = [dict(data_batch.provide_data[i] + data_batch.provide_label[i]) for i in xrange(len(self._context))]
+            input_shapes = [dict(data_batch.provide_data[i] + data_batch.provide_label[i]) for i in range(len(self._context))]
         else:
-            input_shapes = [dict(data_batch.provide_data[i]) for i in xrange(len(data_batch.provide_data))]
+            input_shapes = [dict(data_batch.provide_data[i]) for i in range(len(data_batch.provide_data))]
 
         # decide if shape changed
         shape_changed = len(current_shapes) != len(input_shapes)
@@ -1034,7 +1036,7 @@ class MutableModule(BaseModule):
         if shape_changed:
             # self._curr_module.reshape(data_batch.provide_data, data_batch.provide_label)
             module = Module(self._symbol, self._data_names, self._label_names,
-                            logger=self.logger, context=[self._context[i] for i in xrange(len(data_batch.provide_data))],
+                            logger=self.logger, context=[self._context[i] for i in range(len(data_batch.provide_data))],
                             work_load_list=self._work_load_list,
                             fixed_param_names=self._fixed_param_names)
             module.bind(data_batch.provide_data, data_batch.provide_label, self._curr_module.for_training,
