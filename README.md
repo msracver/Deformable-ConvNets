@@ -8,7 +8,7 @@ The major contributors of this repository include [Yuwen Xiong](https://github.c
 
 ## Introduction
 
-**Deformable ConvNets** is initially described in an [arxiv tech report](https://arxiv.org/abs/1703.06211).
+**Deformable ConvNets** is initially described in an [ICCV 2017 oral paper](https://arxiv.org/abs/1703.06211).
 
 **R-FCN** is initially described in a [NIPS 2016 paper](https://arxiv.org/abs/1605.06409).
 
@@ -81,16 +81,12 @@ If you find Deformable ConvNets useful in your research, please consider citing:
 
 1. MXNet from [the offical repository](https://github.com/dmlc/mxnet). We tested our code on [MXNet@(commit 62ecb60)](https://github.com/dmlc/mxnet/tree/62ecb60). Due to the rapid development of MXNet, it is recommended to checkout this version if you encounter any issues. We may maintain this repository periodically if MXNet adds important feature in future release.
 
-2. Python 2.7. We recommend using Anaconda2 as it already includes many common packages. We do not suppoort Python 3 yet, if you want to use Python 3 you need to modify the code to make it work.
-
-
+2. Python 2.7. We recommend using Anaconda2 as it already includes many common packages. We do not support Python 3 yet, if you want to use Python 3 you need to modify the code to make it work.
 
 
 3. Python packages might missing: cython, opencv-python >= 3.2.0, easydict. If `pip` is set up on your system, those packages should be able to be fetched and installed by running
 	```
-	pip install Cython
-	pip install opencv-python==3.2.0.6
-	pip install easydict==1.6
+	pip install -r requirements.txt
 	```
 4. For Windows users, Visual Studio 2015 is needed to compile cython module.
 
@@ -110,29 +106,46 @@ git clone https://github.com/msracver/Deformable-ConvNets.git
 
 3. Install MXNet:
 
-	3.1 Clone MXNet and checkout to [MXNet@(commit 62ecb60)](https://github.com/dmlc/mxnet/tree/62ecb60) by
+	***Quick start***
+
+	3.1 Install MXNet and all dependencies by 
+	```
+	pip install -r requirements.txt
+	```
+	If there is no other error message, MXNet should be installed successfully. 
+	If you want to build MXNet from source, please follow 3.2 - 3.7.
+	
+	***Build from source (alternative way)***
+	
+	3.2 Checkout this repo to [Deformable-ConvNets@(commit ecc484f)](https://github.com/msracver/Deformable-ConvNets/tree/ecc484f) by
+	```
+	cd $(DCN_ROOT)
+	git checkout ecc484f
+	```
+
+	3.3 Clone MXNet and checkout to [MXNet@(commit 62ecb60)](https://github.com/dmlc/mxnet/tree/62ecb60) by
 	```
 	git clone --recursive https://github.com/dmlc/mxnet.git
 	git checkout 62ecb60
 	git submodule update
 	```
-	3.2 Copy operators in `$(DCN_ROOT)/rfcn/operator_cxx` or `$(DCN_ROOT)/faster_rcnn/operator_cxx` to `$(YOUR_MXNET_FOLDER)/src/operator/contrib` by
+	3.4 Copy operators in `$(DCN_ROOT)/rfcn/operator_cxx` or `$(DCN_ROOT)/faster_rcnn/operator_cxx` to `$(YOUR_MXNET_FOLDER)/src/operator/contrib` by
 	```
 	cp -r $(DCN_ROOT)/rfcn/operator_cxx/* $(MXNET_ROOT)/src/operator/contrib/
 	```
-	3.3 Compile MXNet
+	3.5 Compile MXNet
 	```
 	cd ${MXNET_ROOT}
 	make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_CUDA=1 USE_CUDA_PATH=/usr/local/cuda USE_CUDNN=1
 	```
-	3.4 Install the MXNet Python binding by
+	3.6 Install the MXNet Python binding by
 	
-	***Note: If you will actively switch between different versions of MXNet, please follow 3.5 instead of 3.4***
+	***Note: If you will actively switch between different versions of MXNet, please follow 3.7 instead of 3.6***
 	```
 	cd python
 	sudo python setup.py install
 	```
-	3.5 For advanced users, you may put your Python packge into `./external/mxnet/$(YOUR_MXNET_PACKAGE)`, and modify `MXNET_VERSION` in `./experiments/rfcn/cfgs/*.yaml` to `$(YOUR_MXNET_PACKAGE)`. Thus you can switch among different versions of MXNet quickly.
+	3.7 For advanced users, you may put your Python packge into `./external/mxnet/$(YOUR_MXNET_PACKAGE)`, and modify `MXNET_VERSION` in `./experiments/rfcn/cfgs/*.yaml` to `$(YOUR_MXNET_PACKAGE)`. Thus you can switch among different versions of MXNet quickly.
 
 4. For Deeplab, we use the argumented VOC 2012 dataset. The argumented annotations are provided by [SBD](http://home.bharathh.info/pubs/codes/SBD/download.html) dataset. For convenience, we provide the converted PNG annotations and the lists of train/val images, please download them from [OneDrive](https://1drv.ms/u/s!Am-5JzdW2XHzhqMRhVImMI1jRrsxDg).
 
