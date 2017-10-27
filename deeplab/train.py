@@ -82,7 +82,7 @@ def train_net(args, ctx, pretrained, epoch, prefix, begin_epoch, end_epoch, lr, 
     max_scale = [(config.TRAIN.CROP_HEIGHT, config.TRAIN.CROP_WIDTH)]
     max_data_shape = [('data', (config.TRAIN.BATCH_IMAGES, 3, max([v[0] for v in max_scale]), max([v[1] for v in max_scale])))]
     max_label_shape = [('label', (config.TRAIN.BATCH_IMAGES, 1, max([v[0] for v in max_scale]), max([v[1] for v in max_scale])))]
-    max_data_shape, max_label_shape = train_data.infer_shape(max_data_shape, max_label_shape)
+    # max_data_shape, max_label_shape = train_data.infer_shape(max_data_shape, max_label_shape)
     print 'providing maximum shape', max_data_shape, max_label_shape
 
     # infer shape
