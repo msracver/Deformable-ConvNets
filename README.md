@@ -8,7 +8,7 @@ The major contributors of this repository include [Yuwen Xiong](https://github.c
 
 ## Introduction
 
-**Deformable ConvNets** is initially described in an [ICCV 2017 oral paper](https://arxiv.org/abs/1703.06211).
+**Deformable ConvNets** is initially described in an [ICCV 2017 oral paper](https://arxiv.org/abs/1703.06211). (Slides at [ICCV 2017 Oral](http://www.jifengdai.org/slides/Deformable_Convolutional_Networks_Oral.pdf))
 
 **R-FCN** is initially described in a [NIPS 2016 paper](https://arxiv.org/abs/1605.06409).
 
