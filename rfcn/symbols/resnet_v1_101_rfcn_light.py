@@ -782,13 +782,13 @@ class resnet_v1_101_rfcn_light(Symbol):
 
 
         # light head
-        conv_new_1 = mx.sym.Convolution(data=relu1, kernel=(15, 1), num_filter=256, name="conv_new_1", lr_mult=3.0)
+        conv_new_1 = mx.sym.Convolution(data=relu1, kernel=(15, 1), pad=(7, 0), num_filter=256, name="conv_new_1", lr_mult=3.0)
         relu_new_1 = mx.sym.Activation(data=conv_new_1, act_type='relu', name='relu1')
-        conv_new_2 = mx.sym.Convolution(data=relu_new_1, kernel=(1, 15), num_filter=10*7*7, name="conv_new_2", lr_mult=3.0)
+        conv_new_2 = mx.sym.Convolution(data=relu_new_1, kernel=(1, 15), pad=(0, 7), num_filter=10*7*7, name="conv_new_2", lr_mult=3.0)
         relu_new_2 = mx.sym.Activation(data=conv_new_2, act_type='relu', name='relu2')
-        conv_new_3 = mx.sym.Convolution(data=relu1, kernel=(1, 15), num_filter=256, name="conv_new_3", lr_mult=3.0)
+        conv_new_3 = mx.sym.Convolution(data=relu1, kernel=(1, 15), pad=(0, 7), num_filter=256, name="conv_new_3", lr_mult=3.0)
         relu_new_3 = mx.sym.Activation(data=conv_new_3, act_type='relu', name='relu3')
-        conv_new_4 = mx.sym.Convolution(data=relu_new_3, kernel=(15, 1), num_filter=10*7*7, name="conv_new_4", lr_mult=3.0)
+        conv_new_4 = mx.sym.Convolution(data=relu_new_3, kernel=(15, 1), pad=(7, 0), num_filter=10*7*7, name="conv_new_4", lr_mult=3.0)
         relu_new_4 = mx.sym.Activation(data=conv_new_4, act_type='relu', name='relu4')
         light_head = mx.symbol.broadcast_add(name='light_head', *[relu_new_2, relu_new_4])
         roi_pool = mx.contrib.sym.PSROIPooling(name='roi_pool', data=light_head, rois=rois, group_size=7, pooled_size=7, output_dim=10, spatial_scale=0.0625)
