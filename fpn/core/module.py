@@ -574,7 +574,7 @@ class Module(BaseModule):
             except:
                 _update_params_on_kvstore(self._exec_group.param_arrays,
                                           self._exec_group.grad_arrays,
-                                          self._kvstore, self._exec_group.param_names)
+                                          self._kvstore, param_names=self._exec_group.param_names)
         else:
             _update_params(self._exec_group.param_arrays,
                            self._exec_group.grad_arrays,
