@@ -70,7 +70,7 @@ class RPNFGFraction(mx.metric.EvalMetric):
         num_classes = pred.shape[-1]
         # selection of ground truth label is different from softmax or sigmoid classifier
         label = label.asnumpy().reshape(-1, ).astype('int32')
-        fg_inds = np.where(label == 1)[0]
+        fg_inds = np.where(label > 0)[0]
         bg_inds = np.where(label == 0)[0]
         self.sum_metric += fg_inds.shape[0]
         self.num_inst += (fg_inds.shape[0] + bg_inds.shape[0])
