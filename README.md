@@ -3,7 +3,9 @@
 
 The major contributors of this repository include [Yuwen Xiong](https://github.com/Orpine), [Haozhi Qi](https://github.com/Oh233), [Guodong Zhang](https://github.com/gd-zhang), [Yi Li](https://github.com/liyi14), [Jifeng Dai](https://github.com/daijifeng001), [Bin Xiao](https://github.com/leoxiaobin), [Han Hu](https://github.com/ancientmooner) and  [Yichen Wei](https://github.com/YichenWei).
 
-**[A third-party improvement](https://github.com/bharatsingh430/Deformable-ConvNets) of Deformable R-FCN + Soft NMS, best single-model performance on COCO detection**
+**We released training/testing code and pre-trained models of Deformable FPN, which is the foundation of our COCO detection 2017 entry.** Slides at [COCO 2017 workshop](http://presentations.cocodataset.org/COCO17-Detect-MSRA.pdf).
+
+**[A third-party improvement](https://github.com/bharatsingh430/Deformable-ConvNets) of Deformable R-FCN + Soft NMS**
 
 
 ## Introduction
@@ -65,7 +67,12 @@ If you find Deformable ConvNets useful in your research, please consider citing:
 | <sub>Faster R-CNN (2fc), ResNet-v1-101 </sub>           | <sub>coco trainval</sub> | <sub>coco test-dev</sub> | 30.3 | 52.1    |   31.4  | 9.9  | 32.2  | 47.4  | 
 | <sub>Deformable Faster R-CNN (2fc), </br>ResNet-v1-101</sub> | <sub>coco trainval</sub> | <sub>coco test-dev</sub> | 35.0 | 55.0    | 38.3    | 14.3  | 37.7  | 52.0  |
 
-
+|                                 | <sub>training data</sub> | <sub>testing data</sub>  | <sub>mAP</sub>  | <sub>mAP@0.5</sub> | <sub>mAP@0.75</sub>| <sub>mAP@S</sub> | <sub>mAP@M</sub> | <sub>mAP@L</sub> |
+|---------------------------------|---------------|---------------|------|---------|---------|-------|-------|-------|
+| <sub> FPN+OHEM, ResNet-v1-101 </sub>            | <sub>coco trainval35k</sub> | <sub>coco minival</sub> | 37.8 | 60.8 | 41.0 | 22.0  | 41.5  | 49.8  | 
+| <sub>Deformable FPN + OHEM, ResNet-v1-101</sub> | <sub>coco trainval35k</sub> | <sub>coco minival</sub> | 41.2 | 63.5 | 45.5 | 24.3  | 44.9  | 54.4  |
+| <sub> FPN + OHEM + Soft NMS + multi-scale testing, </br>ResNet-v1-101 </sub>   | <sub>coco trainval35k</sub> | <sub>coco minival</sub> | 40.9 | 62.5    |   46.0  | 27.1  | 44.1  | 52.2  | 
+| <sub> Deformable FPN + OHEM + Soft NMS + multi-scale testing, ResNet-v1-101</sub> | <sub>coco trainval35k</sub> | <sub>coco minival</sub> | 44.4 | 65.5    | 50.2   | 30.8 | 47.3 | 56.4  |
 
 |                                   | training data              | testing data   | mIoU | time  |
 |-----------------------------------|----------------------------|----------------|------|-------|
@@ -105,6 +112,8 @@ git clone https://github.com/msracver/Deformable-ConvNets.git
 2. For Windows users, run ``cmd .\init.bat``. For Linux user, run `sh ./init.sh`. The scripts will build cython module automatically and create some folders.
 
 3. Install MXNet:
+	
+	**Note: The MXNet's Custom Op cannot execute parallelly using multi-gpus after this [PR](https://github.com/apache/incubator-mxnet/pull/6928). We strontly suggest the user rollback to version [MXNet@(commit 998378a)](https://github.com/dmlc/mxnet/tree/998378a) for training (following Section 3.2 - 3.5).**
 
 	***Quick start***
 
@@ -113,39 +122,28 @@ git clone https://github.com/msracver/Deformable-ConvNets.git
 	pip install -r requirements.txt
 	```
 	If there is no other error message, MXNet should be installed successfully. 
-	If you want to build MXNet from source, please follow 3.2 - 3.7.
 	
 	***Build from source (alternative way)***
-	
-	3.2 Checkout this repo to [Deformable-ConvNets@(commit ecc484f)](https://github.com/msracver/Deformable-ConvNets/tree/ecc484f) by
-	```
-	cd $(DCN_ROOT)
-	git checkout ecc484f
-	```
 
-	3.3 Clone MXNet and checkout to [MXNet@(commit 62ecb60)](https://github.com/dmlc/mxnet/tree/62ecb60) by
+	3.2 Clone MXNet and checkout to [MXNet@(commit 998378a)](https://github.com/dmlc/mxnet/tree/998378a) by
 	```
 	git clone --recursive https://github.com/dmlc/mxnet.git
-	git checkout 62ecb60
+	git checkout 998378a
 	git submodule update
 	```
-	3.4 Copy operators in `$(DCN_ROOT)/rfcn/operator_cxx` or `$(DCN_ROOT)/faster_rcnn/operator_cxx` to `$(YOUR_MXNET_FOLDER)/src/operator/contrib` by
-	```
-	cp -r $(DCN_ROOT)/rfcn/operator_cxx/* $(MXNET_ROOT)/src/operator/contrib/
-	```
-	3.5 Compile MXNet
+	3.3 Compile MXNet
 	```
 	cd ${MXNET_ROOT}
 	make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_CUDA=1 USE_CUDA_PATH=/usr/local/cuda USE_CUDNN=1
 	```
-	3.6 Install the MXNet Python binding by
+	3.4 Install the MXNet Python binding by
 	
-	***Note: If you will actively switch between different versions of MXNet, please follow 3.7 instead of 3.6***
+	***Note: If you will actively switch between different versions of MXNet, please follow 3.5 instead of 3.4***
 	```
 	cd python
 	sudo python setup.py install
 	```
-	3.7 For advanced users, you may put your Python packge into `./external/mxnet/$(YOUR_MXNET_PACKAGE)`, and modify `MXNET_VERSION` in `./experiments/rfcn/cfgs/*.yaml` to `$(YOUR_MXNET_PACKAGE)`. Thus you can switch among different versions of MXNet quickly.
+	3.5 For advanced users, you may put your Python packge into `./external/mxnet/$(YOUR_MXNET_PACKAGE)`, and modify `MXNET_VERSION` in `./experiments/rfcn/cfgs/*.yaml` to `$(YOUR_MXNET_PACKAGE)`. Thus you can switch among different versions of MXNet quickly.
 
 4. For Deeplab, we use the argumented VOC 2012 dataset. The argumented annotations are provided by [SBD](http://home.bharathh.info/pubs/codes/SBD/download.html) dataset. For convenience, we provide the converted PNG annotations and the lists of train/val images, please download them from [OneDrive](https://1drv.ms/u/s!Am-5JzdW2XHzhqMRhVImMI1jRrsxDg).
 
@@ -159,6 +157,8 @@ We provide trained deformable convnet models, including the deformable R-FCN & F
 	```
 	./model/rfcn_dcn_coco-0000.params
 	./model/rfcn_coco-0000.params
+	./model/fpn_dcn_coco-0000.params
+	./model/fpn_coco-0000.params
 	./model/rcnn_dcn_coco-0000.params
 	./model/rcnn_coco-0000.params
 	./model/deeplab_dcn_cityscapes-0000.params
