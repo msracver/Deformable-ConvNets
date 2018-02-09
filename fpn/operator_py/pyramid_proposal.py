@@ -24,7 +24,7 @@ class PyramidProposalOperator(mx.operator.CustomOp):
         self._feat_stride = np.fromstring(feat_stride[1:-1], dtype=int, sep=',')
         self._scales = np.fromstring(scales[1:-1], dtype=float, sep=',')
         self._ratios = np.fromstring(ratios[1:-1], dtype=float, sep=',')
-        self._num_anchors = 3
+        self._num_anchors = len(self._scales) * len(self._ratios)
         self._output_score = output_score
         self._rpn_pre_nms_top_n = rpn_pre_nms_top_n
         self._rpn_post_nms_top_n = rpn_post_nms_top_n
