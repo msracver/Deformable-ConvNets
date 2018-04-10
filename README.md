@@ -130,6 +130,7 @@ git clone https://github.com/msracver/Deformable-ConvNets.git
 	git clone --recursive https://github.com/dmlc/mxnet.git
 	git checkout 998378a
 	git submodule update
+	# if it's the first time to checkout, just use: git submodule update --init --recursive
 	```
 	3.3 Compile MXNet
 	```
