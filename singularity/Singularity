@@ -1,0 +1,16 @@
+BootStrap: docker
+From: mxnet/python:gpu_1.1.0
+
+%runscript
+
+%post
+    git clone https://github.com/NIH-HPC/gpu4singularity.git
+    cd gpu4singularity
+    chmod u+rwx gpu4singularity
+    ./gpu4singularity -c -u https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda_9.0.176_384.81_linux-run -V 384.81
+    cd ..
+    rm -rf gpu4singularity
+    apt-get update
+    apt-get install -y python-tk vim
+    pip install --upgrade pip
+    pip install Cython EasyDict matplotlib Pillow opencv-python pyyaml pycocotools scikit-image
