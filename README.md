@@ -186,7 +186,7 @@ We provide trained deformable convnet models, including the deformable R-FCN & F
 4. To visualize the offset of deformable convolution and deformable psroipooling, run
 	```
 	python ./rfcn/deform_conv_demo.py
-	python ./rfcn/defrom_psroi_demo.py
+	python ./rfcn/deform_psroi_demo.py
 	```
 
 
