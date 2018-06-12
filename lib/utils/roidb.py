@@ -1,3 +1,10 @@
+# --------------------------------------------------------
+# Deformable Convolutional Networks
+# Copyright (c) 2017 Microsoft
+# Licensed under The MIT License [see LICENSE for details]
+# Written by Yuwen Xiong
+# --------------------------------------------------------
+
 """
 roidb
 basic format [image_index]['boxes', 'gt_classes', 'gt_overlaps', 'flipped']

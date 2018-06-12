@@ -1,8 +1,8 @@
 # --------------------------------------------------------
 # Deformable Convolutional Networks
 # Copyright (c) 2017 Microsoft
-# Licensed under The Apache-2.0 License [see LICENSE for details]
-# Written by Yi Li, Haocheng Zhang
+# Licensed under The MIT License [see LICENSE for details]
+# Written by Yi Li, Haochen Zhang
 # --------------------------------------------------------
 
 import _init_paths

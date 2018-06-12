@@ -1,10 +1,16 @@
 # --------------------------------------------------------
 # Deformable Convolutional Networks
-# Copyright (c) 2016 by Contributors
 # Copyright (c) 2017 Microsoft
-# Licensed under The Apache-2.0 License [see LICENSE for details]
+# Licensed under The MIT License [see LICENSE for details]
 # Modified by Haozhi Qi
-# --------------------------------------------------------														  
+# --------------------------------------------------------
+# Based on:
+# MX-RCNN
+# Copyright (c) 2016 by Contributors
+# Licence under The Apache 2.0 License
+# https://github.com/ijkguo/mx-rcnn/
+# --------------------------------------------------------
+
 import _init_paths
 
 import cv2

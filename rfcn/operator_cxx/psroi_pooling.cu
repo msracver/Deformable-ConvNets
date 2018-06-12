@@ -1,7 +1,7 @@
 /*!
  * Copyright (c) 2017 by Contributors
  * Copyright (c) 2017 Microsoft
- * Licensed under The Apache-2.0 License [see LICENSE for details]
+ * Licensed under The MIT License [see LICENSE for details]
  * \file psroi_pooling.cu
  * \brief psroi pooling operator
  * \author Yi Li, Tairui Chen, Guodong Zhang, Jifeng Dai

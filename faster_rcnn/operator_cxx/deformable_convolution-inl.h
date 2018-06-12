@@ -1,6 +1,6 @@
 /*!
  * Copyright (c) 2017 Microsoft
- * Licensed under The Apache-2.0 License [see LICENSE for details]
+ * Licensed under The MIT License [see LICENSE for details]
  * \file deformable_convolution-inl.h
  * \brief
  * \ref: https://github.com/Yangqing/caffe/wiki/Convolution-in-Caffe:-a-memo

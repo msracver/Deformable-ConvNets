@@ -1,3 +1,10 @@
+# --------------------------------------------------------
+# Deformable Convolutional Networks
+# Copyright (c) 2017 Microsoft
+# Licensed under The MIT License [see LICENSE for details]
+# Written by Yuwen Xiong, Xizhou Zhu
+# --------------------------------------------------------
+
 import cPickle
 import mxnet as mx
 from utils.symbol import Symbol

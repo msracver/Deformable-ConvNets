@@ -1,8 +1,8 @@
 # --------------------------------------------------------
 # Deformable Convolutional Networks
 # Copyright (c) 2017 Microsoft
-# Licensed under The Apache-2.0 License [see LICENSE for details]
-# Written by Haozhi Qi, Yuwen Xiong
+# Licensed under The MIT License [see LICENSE for details]
+# Modified by Haozhi Qi, Yuwen Xiong
 # --------------------------------------------------------
 
 import mxnet as mx

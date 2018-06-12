@@ -1,6 +1,6 @@
 /*!
  * Copyright (c) 2017 Microsoft
- * Licensed under The Apache-2.0 License [see LICENSE for details]
+ * Licensed under The MIT License [see LICENSE for details]
  * \file deformable_convolution.cc
  * \brief
  * \author Yuwen Xiong, Haozhi Qi, Jifeng Dai

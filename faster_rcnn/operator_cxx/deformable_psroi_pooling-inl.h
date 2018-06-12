@@ -1,9 +1,11 @@
 /*!
-* Copyright (c) 2017 Microsoft
-* Licensed under The Apache-2.0 License [see LICENSE for details]
-* \file deformable_psroi_pooling-inl.h
-* \brief deformable psroi pooling operator and symbol
-* \author Yi Li, Guodong Zhang, Jifeng Dai
+ * Copyright (c) 2017 Microsoft
+ * Licensed under The MIT License [see LICENSE for details]
+ * \file deformable_convolution-inl.h
+ * \brief
+ * \ref: https://github.com/Yangqing/caffe/wiki/Convolution-in-Caffe:-a-memo
+ * \ref: https://arxiv.org/abs/1703.06211
+ * \author Yuwen Xiong, Haozhi Qi, Jifeng Dai
 */
 #ifndef MXNET_OPERATOR_DEFORMABLE_PSROI_POOLING_INL_H_
 #define MXNET_OPERATOR_DEFORMABLE_PSROI_POOLING_INL_H_
