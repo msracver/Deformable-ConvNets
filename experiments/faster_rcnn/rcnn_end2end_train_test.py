@@ -1,9 +1,10 @@
 # --------------------------------------------------------
 # Deformable Convolutional Networks
 # Copyright (c) 2017 Microsoft
-# Licensed under The Apache-2.0 License [see LICENSE for details]
-# Modified by Guodong Zhang
+# Licensed under The MIT License [see LICENSE for details]
+# Written by Guodong Zhang
 # --------------------------------------------------------
+
 import os
 import sys
 os.environ['PYTHONUNBUFFERED'] = '1'
