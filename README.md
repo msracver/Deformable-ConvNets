@@ -31,7 +31,7 @@ This is an official implementation for [Deformable Convolutional Networks](https
   
 ## License
 
-© Microsoft, 2017. Licensed under an Apache-2.0 license.
+© Microsoft, 2017. Licensed under an MIT license.
 
 ## Citing Deformable ConvNets
 
