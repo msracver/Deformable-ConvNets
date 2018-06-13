@@ -2,6 +2,14 @@
 
 THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
 
+This project incorporates components from the projects listed below. The original copyright notices and the licenses under which Microsoft received such components are set forth below. Microsoft reserves all rights not expressly granted herein, whether by implication, estoppel or otherwise.
+
+1.  MXNet (https://github.com/apache/incubator-mxnet)
+2.  Fast R-CNN (https://github.com/rbgirshick/fast-rcnn)
+3.  Faster R-CNN (https://github.com/rbgirshick/py-faster-rcnn)
+4.  Caffe (https://github.com/BVLC/caffe)
+5.  MS COCO API (https://github.com/cocodataset/cocoapi)
+
 MXNet
 
 Copyright (c) 2015-2016 by Contributors
