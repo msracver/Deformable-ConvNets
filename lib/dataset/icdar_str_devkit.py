@@ -23,7 +23,7 @@ from imdb import IMDB
 from pascal_voc_eval import voc_eval, voc_eval_sds
 from ds_utils import unique_boxes, filter_small_boxes
 
-class TableStructure(IMDB):
+class TableStr(IMDB):
     def __init__(self, image_set, root_path, devkit_path, result_path=None, mask_size=-1, binary_thresh=None):
         """
         fill basic information to initialize imdb
@@ -32,11 +32,12 @@ class TableStructure(IMDB):
         :param devkit_path: data and results
         :return: imdb object
         """
-        year = image_set.split('_')[0]
-        image_set = image_set[len(year) + 1 : len(image_set)]
-        super(TableStructure, self).__init__('icdar_str_devkit', image_set, root_path, devkit_path, result_path)  # set self.name
+        #year = image_set.split('_')[0]
+        #image_set = image_set[len(year) + 1 : len(image_set)]
+        super(TableStr, self).__init__('icdar_str_devkit', image_set, root_path, devkit_path, result_path)  # set self.name
+        #super(TableStr,self).__init__(self.__class__.__name__, image_set, root_path, devkit_path, result_path)   
 
-        self.year = year
+        #self.year = year
         self.root_path = root_path
         self.devkit_path = devkit_path
         self.data_path = os.path.join(devkit_path, root_path)
@@ -59,7 +60,7 @@ class TableStructure(IMDB):
         find out which indexes correspond to given image set (train or val)
         :return:
         """
-        image_set_index_file = os.path.join(self.data_path, 'ImageSets', 'Main', self.image_set + '.txt')
+        image_set_index_file = os.path.join(self.data_path, 'ImageSets', self.image_set + '.txt')
         assert os.path.exists(image_set_index_file), 'Path does not exist: {}'.format(image_set_index_file)
         with open(image_set_index_file) as f:
             image_set_index = [x.strip() for x in f.readlines()]
@@ -71,7 +72,7 @@ class TableStructure(IMDB):
         :param index: index of a specific image
         :return: full path of this image
         """
-        image_file = os.path.join(self.data_path, 'JPEGImages', index + '.jpg')
+        image_file = os.path.join(self.data_path, 'Images', index + '.jpg')
         assert os.path.exists(image_file), 'Path does not exist: {}'.format(image_file)
         return image_file
 
@@ -382,7 +383,7 @@ class TableStructure(IMDB):
         VOCdevkit/results/VOC2007/Main/<comp_id>_det_test_aeroplane.txt
         :return: a string template
         """
-        res_file_folder = os.path.join(self.result_path, 'results', 'TableStructure')
+        res_file_folder = os.path.join(self.result_path, 'results', 'TableStr')
         comp_id = self.config['comp_id']
         filename = comp_id + '_det_' + self.image_set + '_{:s}.txt'
         path = os.path.join(res_file_folder, filename)

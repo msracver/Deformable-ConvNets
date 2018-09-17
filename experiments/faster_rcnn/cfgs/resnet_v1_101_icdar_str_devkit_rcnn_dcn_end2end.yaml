@@ -11,7 +11,7 @@ default:
   frequent: 100
   kvstore: device
 network:
-  pretrained: "./model/pretrained_model/resnet_v1_101-0000"
+  pretrained: "./model/pretrained_model/resnet_v1_101"
   pretrained_epoch: 0
   PIXEL_MEANS:
   - 103.06
@@ -49,10 +49,10 @@ network:
   NUM_ANCHORS: 9
 dataset:
   NUM_CLASSES: 3
-  dataset: TableStructure
+  dataset: TableStr
   dataset_path: "/home/tsaguest/datasets/icdar_str_devkit"
   image_set: train #2007_trainval+2012_trainval
-  root_path: "./data"
+  root_path: "data"
   test_image_set: test #2007_test
   proposal: rpn
 TRAIN:
