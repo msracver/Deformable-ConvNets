@@ -383,7 +383,7 @@ class TableStr(IMDB):
         VOCdevkit/results/VOC2007/Main/<comp_id>_det_test_aeroplane.txt
         :return: a string template
         """
-        res_file_folder = os.path.join(self.result_path, 'results', 'TableStr')
+        res_file_folder = os.path.join(self.result_path, 'results')
         comp_id = self.config['comp_id']
         filename = comp_id + '_det_' + self.image_set + '_{:s}.txt'
         path = os.path.join(res_file_folder, filename)
