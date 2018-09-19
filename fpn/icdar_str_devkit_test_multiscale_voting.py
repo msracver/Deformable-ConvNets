@@ -53,18 +53,19 @@ MAJORITY_VOTING_CONFIDENCE_THRESHOLD = 0.95
 
 # set up class names
 # CLASSES = ['table', 'figure', 'formula'] # TODO
-CLASSES = ['table']
+CLASSES = ['row','column']
 TOTAL_CLASSES = ['__background__', 'row', 'column']
-CONCERNED_ERRORS = ['table']
+CONCERNED_ERRORS = ['row','column']
 
 WRITE_DETECTION_RESULTS = True
 WRITE_ANNOTATION_RESULTS = True
 
 CONFIDENCE_THRESHOLD = 0.95
-MODEL_EPOCH = 50
+#MODEL_EPOCH = [01,02,03,04,05,06,07]
+MODEL_EPOCH = 7
 
 EXPERIMENT_NAME = "icdar-fpn-3cls-false_examples-" + str(MODEL_EPOCH) + "ep-" + str(CONFIDENCE_THRESHOLD) + "conf-multiscale"
-MODEL_PATH = './output/fpn/stucture-latest-2/resnet_v1_101_icdar_str_devkit_fpn_dcn_end2end_ohem/train/'
+MODEL_PATH = './output/fpn/structure-latest-0/resnet_v1_101_icdar_str_devkit_fpn_dcn_end2end_ohem/train/fpn_icdar_str_devkit'
 
 # @numba.jit(nopython=True)
 def bbox_intersection_over_union(boxA, boxB):

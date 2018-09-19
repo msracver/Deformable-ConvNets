@@ -1,6 +1,6 @@
 ---
 MXNET_VERSION: "mxnet"
-output_path: "./output/fpn/structure-latest-2"
+output_path: "./output/fpn/structure-latest-4"
 symbol: resnet_v1_101_fpn_dcn_rcnn
 gpus: '0'
 CLASS_AGNOSTIC: false
@@ -46,12 +46,16 @@ network:
   - gamma
   - beta
   ANCHOR_RATIOS:
+  - 0.25
   - 0.5
   - 1
   - 2
+  - 4
   ANCHOR_SCALES:
+  - 4 
   - 8
-  NUM_ANCHORS: 3
+  - 16
+  NUM_ANCHORS: 15
 dataset:
   NUM_CLASSES: 3
   dataset: TableStr
@@ -62,15 +66,15 @@ dataset:
   test_image_set: test #minival2014
   proposal: rpn
 TRAIN:
-  lr: 0.01
-  warmup_lr: 0.001
+  lr: 0.00125
+  warmup_lr: 0.00025
   warmup_step: 250
   warmup: true
   # lr: 0.000001
-  lr_step: '4,6'
+  lr_step: '4,16,32,64'
   wd: 0.0001
   begin_epoch: 0
-  end_epoch: 7
+  end_epoch: 50
   model_prefix: 'fpn_icdar_str_devkit'
   # whether resume training
   RESUME: false
