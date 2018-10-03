@@ -1,6 +1,6 @@
 ---
 MXNET_VERSION: "mxnet"
-output_path: "./output/fpn/structure-icdar13-row"
+output_path: "./output/fpn/structure-icdar13-column"
 symbol: resnet_v1_101_fpn_dcn_rcnn
 gpus: '0'
 CLASS_AGNOSTIC: false
@@ -75,7 +75,7 @@ TRAIN:
   wd: 0.0001
   begin_epoch: 0
   end_epoch: 50
-  model_prefix: 'fpn_icdar_str_devkit'
+  model_prefix: 'fpn_icdar_str_devkit_column'
   # whether resume training
   RESUME: false
   # whether flip image

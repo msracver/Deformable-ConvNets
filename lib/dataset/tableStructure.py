@@ -22,8 +22,11 @@ import PIL
 from imdb import IMDB
 from pascal_voc_eval import voc_eval, voc_eval_sds
 from ds_utils import unique_boxes, filter_small_boxes
+import xml.etree.ElementTree as ET
 
-class TableStrOld(IMDB):
+filterOutNonAnnotatedImages = False
+
+class tableStructure(IMDB):
     def __init__(self, image_set, root_path, devkit_path, result_path=None, mask_size=-1, binary_thresh=None):
         """
         fill basic information to initialize imdb
@@ -32,21 +35,21 @@ class TableStrOld(IMDB):
         :param devkit_path: data and results
         :return: imdb object
         """
-        #year = image_set.split('_')[0]
-        #image_set = image_set[len(year) + 1 : len(image_set)]
-        super(TableStrOld, self).__init__('icdar_str_devkit', image_set, root_path, devkit_path, result_path)  # set self.name
-        #super(TableStr,self).__init__(self.__class__.__name__, image_set, root_path, devkit_path, result_path)   
+        # year = image_set.split('_')[0]
+        # image_set = image_set[len(year) + 1 : len(image_set)]
+        print (image_set)
+        super(tableStructure, self).__init__(self.__class__.__name__, image_set, root_path, devkit_path, result_path)  # set self.name
 
-        #self.year = year
         self.root_path = root_path
         self.devkit_path = devkit_path
         self.data_path = os.path.join(devkit_path, root_path)
 
         self.classes = ['__background__',  # always index 0
-                        'row','column']
+                        'row']
         self.num_classes = len(self.classes)
         self.image_set_index = self.load_image_set_index()
         self.num_images = len(self.image_set_index)
+        self.image_ext = ['.jpg', '.png', '.bmp']
         print 'num_images', self.num_images
         self.mask_size = mask_size
         self.binary_thresh = binary_thresh
@@ -60,11 +63,69 @@ class TableStrOld(IMDB):
         find out which indexes correspond to given image set (train or val)
         :return:
         """
-        image_set_index_file = os.path.join(self.data_path, 'ImageSets', self.image_set + '.txt')
-        assert os.path.exists(image_set_index_file), 'Path does not exist: {}'.format(image_set_index_file)
-        with open(image_set_index_file) as f:
-            image_set_index = [x.strip() for x in f.readlines()]
-        return image_set_index
+        # image_set_index_file = os.path.join(self.data_path, 'ImageSets', 'Main', self.image_set + '.txt')
+        # assert os.path.exists(image_set_index_file), 'Path does not exist: {}'.format(image_set_index_file)
+        # with open(image_set_index_file) as f:
+        #     image_set_index = [x.strip() for x in f.readlines()]
+        # return image_set_index
+        image_set_file = os.path.join(self.data_path, 'ImageSets', self.image_set + '.txt')
+        assert os.path.exists(image_set_file), \
+                'Path does not exist: {}'.format(image_set_file)
+        with open(image_set_file) as f:
+            image_index = [x.strip() for x in f.readlines()]
+        print ("Files found in ImageSet: %d" % len(image_index))
+
+        # Verify the image name from the test set
+        isTrainImageSet = False
+        if "train" in self.image_set:
+            print ("Removing items from training list which are already present in the test list")
+            isTrainImageSet = True
+            if "_" in self.image_set:
+                imageSetComps = self.image_set.split("_")
+                imageSetComps[0] = "test"
+                imageSetName = "_".join(imageSetComps)
+                test_image_set_file = os.path.join(self.data_path, 'ImageSets', imageSetName + '.txt')
+            else:
+                test_image_set_file = os.path.join(self.data_path, 'ImageSets', 'test.txt')
+
+            # assert os.path.exists(test_image_set_file), \
+            #     'Path does not exist: {} (for image filtering)'.format(test_image_set_file)
+
+            if os.path.exists(test_image_set_file):
+                with open(test_image_set_file) as f:
+                    test_image_index = [x.strip() for x in f.readlines()]
+                print ("Files found in Test ImageSet: %d" % len(test_image_index))
+            else:
+                print ("Warning: Corresponding test imageset not found!")
+                test_image_index = []
+
+            filtered_image_index = []
+            for ind in image_index:
+                # Load and verify if the annotation file contains atleast one instance of the objet of interest
+                filename = os.path.join(self.data_path, 'Annotations', ind + '.xml')
+
+                # If image already in test set, remove from the train set
+                if ind in test_image_index:
+                    print ("Image %s already exists in test set. Skipping from the train set." % (ind))
+                    continue
+
+                # TODO
+                if filterOutNonAnnotatedImages:
+                    tree = ET.parse(filename)
+                    objs = tree.findall('object')
+
+                    # Discard all the objects not belonging to that class
+                    for ix, obj in enumerate(objs):
+                        if obj.find('name').text.lower().strip() in self.classes:
+                            filtered_image_index.append(ind)
+                            break
+                else:
+                    filtered_image_index.append(ind)
+            # return image_index
+            print ("Files left after filtering: %d" % len(filtered_image_index))
+            return filtered_image_index
+        else:
+            return image_index
 
     def image_path_from_index(self, index):
         """
@@ -72,9 +133,14 @@ class TableStrOld(IMDB):
         :param index: index of a specific image
         :return: full path of this image
         """
-        image_file = os.path.join(self.data_path, 'Images', index + '.jpg')
-        assert os.path.exists(image_file), 'Path does not exist: {}'.format(image_file)
-        return image_file
+        # image_file = os.path.join(self.data_path, 'JPEGImages', index + '.jpg')
+        for ext in self.image_ext:
+            image_path = os.path.join(self.data_path, 'Images', index + ext)
+            if os.path.exists(image_path):
+                break
+        assert os.path.exists(image_path), \
+                'Path does not exist: {}'.format(image_path)
+        return image_path
 
     def segmentation_path_from_index(self, index):
         """
@@ -130,22 +196,28 @@ class TableStrOld(IMDB):
         :param index: index of a specific image
         :return: record['boxes', 'gt_classes', 'gt_overlaps', 'flipped']
         """
-        import xml.etree.ElementTree as ET
         roi_rec = dict()
         roi_rec['image'] = self.image_path_from_index(index)
 
         filename = os.path.join(self.data_path, 'Annotations', index + '.xml')
         tree = ET.parse(filename)
-        size = tree.find('size')
-        roi_rec['height'] = float(size.find('height').text)
-        roi_rec['width'] = float(size.find('width').text)
-        #im_size = cv2.imread(roi_rec['image'], cv2.IMREAD_COLOR|cv2.IMREAD_IGNORE_ORIENTATION).shape
+        # size = tree.find('size')
+        # roi_rec['height'] = float(size.find('height').text)
+        # roi_rec['width'] = float(size.find('width').text)
+        im_size = cv2.imread(roi_rec['image'], cv2.IMREAD_COLOR|cv2.IMREAD_IGNORE_ORIENTATION).shape
+        roi_rec['height'] = float(im_size[0])
+        roi_rec['width'] = float(im_size[1])
         #assert im_size[0] == roi_rec['height'] and im_size[1] == roi_rec['width']
 
         objs = tree.findall('object')
-        if not self.config['use_diff']:
-            non_diff_objs = [obj for obj in objs if int(obj.find('difficult').text) == 0]
-            objs = non_diff_objs
+
+        # Discard all the objects not belonging to that class
+        updatedObjs = []
+        for ix, obj in enumerate(objs):
+            if obj.find('name').text.lower().strip() in self.classes:
+                updatedObjs.append(obj)
+
+        objs = updatedObjs
         num_objs = len(objs)
 
         boxes = np.zeros((num_objs, 4), dtype=np.uint16)
@@ -250,14 +322,14 @@ class TableStrOld(IMDB):
         result_dir = os.path.join(self.result_path, 'results')
         if not os.path.exists(result_dir):
             os.mkdir(result_dir)
-        year_folder = os.path.join(self.result_path, 'results')
+        year_folder = os.path.join(self.result_path, 'results', 'Table')
         if not os.path.exists(year_folder):
             os.mkdir(year_folder)
-        res_file_folder = os.path.join(self.result_path, 'results')
+        res_file_folder = os.path.join(self.result_path, 'results', 'Table', 'Main')
         if not os.path.exists(res_file_folder):
             os.mkdir(res_file_folder)
 
-        self.write_pascal_results(detections)
+        # self.write_pascal_results(detections)
         info = self.do_python_eval()
         return info
 
@@ -284,14 +356,20 @@ class TableStrOld(IMDB):
         result_dir = os.path.join(self.result_path, 'results')
         if not os.path.exists(result_dir):
             os.mkdir(result_dir)
-        year_folder = os.path.join(self.result_path, 'results')
+        # year_folder = os.path.join(self.result_path, 'results', 'VOC' + self.year)
+        # if not os.path.exists(year_folder):
+        #     os.mkdir(year_folder)
+        # res_file_folder = os.path.join(self.result_path, 'results', 'VOC' + self.year, 'Segmentation')
+        # if not os.path.exists(res_file_folder):
+        #     os.mkdir(res_file_folder)
+        year_folder = os.path.join(self.result_path, 'results', 'Table')
         if not os.path.exists(year_folder):
             os.mkdir(year_folder)
-        res_file_folder = os.path.join(self.result_path, 'results', 'Segmentation')
+        res_file_folder = os.path.join(self.result_path, 'results', 'Table', 'Segmentation')
         if not os.path.exists(res_file_folder):
             os.mkdir(res_file_folder)
 
-        result_dir = os.path.join(self.result_path, 'results', 'Segmentation')
+        result_dir = os.path.join(self.result_path, 'results', 'Table', 'Segmentation')
         if not os.path.exists(result_dir):
             os.mkdir(result_dir)
 
@@ -352,7 +430,7 @@ class TableStrOld(IMDB):
         :return: the evaluation metrics
         """
         confusion_matrix = np.zeros((self.num_classes,self.num_classes))
-        result_dir = os.path.join(self.result_path, 'results', 'Segmentation')
+        result_dir = os.path.join(self.result_path, 'results', 'Table', 'Segmentation')
 
         for i, index in enumerate(self.image_set_index):
             seg_gt_info = self.load_pascal_segmentation_annotation(index)
@@ -383,7 +461,7 @@ class TableStrOld(IMDB):
         VOCdevkit/results/VOC2007/Main/<comp_id>_det_test_aeroplane.txt
         :return: a string template
         """
-        res_file_folder = os.path.join(self.result_path, 'results')
+        res_file_folder = os.path.join(self.result_path, 'results', 'Table', 'Main')
         comp_id = self.config['comp_id']
         filename = comp_id + '_det_' + self.image_set + '_{:s}.txt'
         path = os.path.join(res_file_folder, filename)
@@ -421,8 +499,10 @@ class TableStrOld(IMDB):
         imageset_file = os.path.join(self.data_path, 'ImageSets', self.image_set + '.txt')
         annocache = os.path.join(self.cache_path, self.name + '_annotations.pkl')
         aps = []
+        recs = []
+        precs = []
         # The PASCAL VOC metric changed in 2010
-        use_07_metric = True if self.year == 'SDS' or int(self.year) < 2010 else False
+        use_07_metric = False#True if self.year == 'SDS' or int(self.year) < 2010 else False
         print 'VOC07 metric? ' + ('Y' if use_07_metric else 'No')
         info_str += 'VOC07 metric? ' + ('Y' if use_07_metric else 'No')
         info_str += '\n'
@@ -433,12 +513,27 @@ class TableStrOld(IMDB):
             rec, prec, ap = voc_eval(filename, annopath, imageset_file, cls, annocache,
                                      ovthresh=0.5, use_07_metric=use_07_metric)
             aps += [ap]
+            recs += [rec]
+            precs += [prec]
             print('AP for {} = {:.4f}'.format(cls, ap))
             info_str += 'AP for {} = {:.4f}\n'.format(cls, ap)
+
+            print('Precision for {} = {}'.format(cls, prec))
+            print('Precision for {} = {:.4f}'.format(cls, prec))
+            info_str += 'Precision for {} = {:.4f}\n'.format(cls, prec)
+            print('Recall for {} = {:.4f}'.format(cls, rec))
+            info_str += 'Recall for {} = {:.4f}\n'.format(cls, rec)
+
         print('Mean AP@0.5 = {:.4f}'.format(np.mean(aps)))
         info_str += 'Mean AP@0.5 = {:.4f}\n\n'.format(np.mean(aps))
+        print('Precision@0.5 = {:.4f}'.format(np.mean(prec)))
+        info_str += 'Precision@0.5 = {:.4f}'.format(np.mean(prec))
+        print('Recall@0.5 = {:.4f}'.format(np.mean(recs)))
+        info_str += 'Recall@0.5 = {:.4f}'.format(np.mean(recs))
         # @0.7
         aps = []
+        recs = []
+        precs = []
         for cls_ind, cls in enumerate(self.classes):
             if cls == '__background__':
                 continue
@@ -446,8 +541,20 @@ class TableStrOld(IMDB):
             rec, prec, ap = voc_eval(filename, annopath, imageset_file, cls, annocache,
                                      ovthresh=0.7, use_07_metric=use_07_metric)
             aps += [ap]
+            recs += [rec]
+            precs += [prec]
             print('AP for {} = {:.4f}'.format(cls, ap))
             info_str += 'AP for {} = {:.4f}\n'.format(cls, ap)
+
+            print('Precision for {} = {:.4f}'.format(cls, prec))
+            info_str += 'Precision for {} = {:.4f}\n'.format(cls, prec)
+            print('Recall for {} = {:.4f}'.format(cls, rec))
+            info_str += 'Recall for {} = {:.4f}\n'.format(cls, rec)
+
         print('Mean AP@0.7 = {:.4f}'.format(np.mean(aps)))
         info_str += 'Mean AP@0.7 = {:.4f}'.format(np.mean(aps))
+        print('Precision@0.7 = {:.4f}'.format(np.mean(prec)))
+        info_str += 'Precision@0.7 = {:.4f}'.format(np.mean(prec))
+        print('Recall@0.7 = {:.4f}'.format(np.mean(recs)))
+        info_str += 'Recall@0.7 = {:.4f}'.format(np.mean(recs))
         return info_str

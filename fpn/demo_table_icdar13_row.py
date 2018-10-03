@@ -48,8 +48,8 @@ WRITE_DETECTION_RESULTS = True
 
 MODEL_EPOCH = 50
 CONFIDENCE_THRESHOLD = 0.5
-EXPERIMENT_NAME = "icdar-fpn-2cls-false_examples-" + str(MODEL_EPOCH) + "ep-" + str(CONFIDENCE_THRESHOLD) + "conf"
-MODEL_PATH = './output/fpn/structure-latest-row-1/resnet_v1_101_icdar_str_devkit_fpn_dcn_end2end_ohem/train/fpn_icdar_str_devkit'
+EXPERIMENT_NAME = "icdar13-fpn-2cls-false_examples-" + str(MODEL_EPOCH) + "ep-" + str(CONFIDENCE_THRESHOLD) + "conf"
+MODEL_PATH = './output/fpn/structure-icdar13-row/resnet_v1_101_icdar_str_devkit_fpn_dcn_end2end_ohem/train/fpn_icdar_str_devkit'
 
 
 def bbox_intersection_over_union(boxA, boxB):
@@ -209,7 +209,7 @@ def main():
 
     # load demo data
     dataBaseDir = '/mnt/Imran/datasets/icdar_str_devkit/data/'
-    outputBaseDir = '/mnt/Imran/StructureResults/Deformable-fpn-model-row-3-' + EXPERIMENT_NAME
+    outputBaseDir = '/mnt/Imran/StructureResults/Deformable-fpn-model-row-' + EXPERIMENT_NAME
 
     if os.path.exists(outputBaseDir):
         shutil.rmtree(outputBaseDir)

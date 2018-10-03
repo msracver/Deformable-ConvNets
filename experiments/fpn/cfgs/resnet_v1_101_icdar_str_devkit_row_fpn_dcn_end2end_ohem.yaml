@@ -75,7 +75,7 @@ TRAIN:
   wd: 0.0001
   begin_epoch: 0
   end_epoch: 50
-  model_prefix: 'fpn_icdar_str_devkit'
+  model_prefix: 'fpn_icdar_str_devkit_row'
   # whether resume training
   RESUME: false
   # whether flip image
