@@ -1,14 +1,12 @@
 # Deformable Convolutional Networks
 
-The major contributors of this repository include [Yuwen Xiong](https://github.com/Orpine), [Haozhi Qi](https://github.com/Oh233), [Guodong Zhang](https://github.com/gd-zhang), [Yi Li](https://github.com/liyi14), [Jifeng Dai](https://github.com/daijifeng001), [Bin Xiao](https://github.com/leoxiaobin), [Han Hu](https://github.com/ancientmooner) and  [Yichen Wei](https://github.com/YichenWei).
-
 ## Update
 
-**[12/01/2018] We updated the deformable convolution operator and added the modulated deformable convolution operator introduced in the [DCNv2](https://arxiv.org/abs/1811.11168) paper. See more details in [DCNv2_op/README.md](https://github.com/msracver/Deformable-ConvNets/blob/master/DCNv2_op/README.md).**
-	
-  *Note the other modules (faster R-CNN, mask R-CNN, ...) have not been updated and please use the [operators](https://github.com/msracver/Deformable-ConvNets/tree/master/DCNv2_op) in your own projects for specific tasks. 
+**[12/01/2018] We updated the deformable convolution operator to be the same as those utilized in the [Deformale ConvNets v2](https://arxiv.org/abs/1811.11168) paper. A possible issue when the sampling location is outside of image boundary is solved. The issue may cause deteriated performance on ImageNet classification. Note that the current deformable conv layers in both the official MXNet and the PyTorch codebase still have the issue. So if you want to reproduce the results in Deformable ConvNets v2, please utilize the updated layer provided here. The efficiency at large image batch size is also improved. See more details in [DCNv2_op/README.md](https://github.com/msracver/Deformable-ConvNets/blob/master/DCNv2_op/README.md).**
 
-**[10/2017] We released training/testing code and pre-trained models of Deformable FPN, which is the foundation of our COCO detection 2017 entry.** Slides at [COCO 2017 workshop](http://presentations.cocodataset.org/COCO17-Detect-MSRA.pdf).
+* The full codebase of Deformable ConvNets v2 would be available later. But it should be easy to reproduce the results with the updated operator.
+
+**[10/2017] We released the training/testing code and pre-trained models of Deformable FPN, which is the foundation of our COCO detection 2017 entry.** Slides at [COCO 2017 workshop](http://presentations.cocodataset.org/COCO17-Detect-MSRA.pdf).
 
 **[A third-party improvement](https://github.com/bharatsingh430/Deformable-ConvNets) of Deformable R-FCN + Soft NMS**
 

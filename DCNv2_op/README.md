@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This folder provides the operators used in [DCNv2](https://arxiv.org/abs/1811.11168):
+This folder provides the operators used in [Deformable ConvNets v2](https://arxiv.org/abs/1811.11168):
 
 ```
 @article{DCNv2_2018,
@@ -13,11 +13,18 @@ This folder provides the operators used in [DCNv2](https://arxiv.org/abs/1811.11
 }
 ```
 
-There are two operators in this folder. The first one is an updated deformable convolution operator. We have two major modifications:
+This folder provides the updated deformable conv layer which can reproduce the results in the Deformable ConvNets v2 paper. The major changes are as follows:
 
-* The new operator simutaneously processes multiple images in one computation loop, rather than processing one image in one loop as in the old operator.
+* To better handle occasions where sampling locations are outside of the image boundary.
 
-    Both the old and new operators use the following computation pipeline (illustrated by a 3x3 deformable convolution with input data of NxCxHxW and output data of NxC'xHxW):
+    In the previous operator, if the sampling location is outside of the feature map boundary, its sampled value would be zero. Thus, the gradient with respect to learnable offset would be zero. We found such a scheme may deteriate the performance in ImageNet classification (perhaps because the feature maps are of low resolution). For object detection on COCO, both the previous and the updated operators deliver the same results.
+
+    In the new operator, if the sampling location is within one pixel outside of the feature map boundary, bilinear sampling would also be applied. And gradient with respect to learnable offset can be non zero for such locations. This is implemented by padding zeros (by one row/column) outside of the boundaries of feature maps, and performing bilinear sampling on the padded feature maps.
+
+
+* The efficiency when processing multiple images in a mini-batch is considerably improved.
+
+    Both the previous and the updated operators follow the following computation pipeline (illustrated by a 3x3 deformable convolution with input data of NxCxHxW and output data of NxC'xHxW):
 
       for i in range(N/S):
           step 1 (slicing): slicing the input data at the batch dimension from i*S to (i+1)*S, input (NxCxHxW) -> sliced input (SxCxHxW)
@@ -26,14 +33,7 @@ There are two operators in this folder. The first one is an updated deformable c
           step 4 (Merge): merge sliced output to form the whole output data (NxC'xHxW) 
       end
 
-    In the old operator, S is fixed as 1. In the new operator, S can be set by a new *im2col_step* parameter its default value is min(N, 64). The new operator is significantly faster than the old one when the image batch size is large (e.g. 32 as a usual practice in ImageNet classification).
+    In the previous operator, S is fixed as 1. In the updated operator, S can be set by the *im2col_step* parameter, whose default value is min(N, 64). The updated operator is significantly faster than the existing one when the image batch size is large.
 
-* The boundary processing scheme is modified.
-    
-    In the old operator, the pixel with any one coordinate (x or y) in (-inf, 0) is set as 0. The pixel with one coordinate in [H(W)-1,H(W)] is bilinear sampled assuming the pixel value on H(W) is the same as on H(W)-1. The pixel with any one coordinate in (H(W), inf) is set as 0.
 
-    In the new operator, the input image is firstly padded with zeros and then bilinear sampling is performed on all range of locations.
-
-    The new boundary scheme has little influence on tasks with large output feature map size (e.g. object detection), but can lead to better accuracy on tasks with small output feature map size (e.g. 7x7 as a usual practice in ImageNet classification).
-
-The second operator is a new modulated deformable convolution operator introduced in the DCNv2 paper. Please see [example_symbol.py](https://github.com/msracver/Deformable-ConvNets/blob/master/DCNv2_op/example_symbol.py) for an example usage.
+Check [example_symbol.py](https://github.com/msracver/Deformable-ConvNets/blob/master/DCNv2_op/example_symbol.py) for an example of utilizing the operators.
