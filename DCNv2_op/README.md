@@ -13,7 +13,7 @@ This folder provides the operators used in [Deformable ConvNets v2](https://arxi
 }
 ```
 
-This folder provides the updated deformable conv layer which can reproduce the results in the Deformable ConvNets v2 paper. The major changes are as follows:
+This folder provides the operators of modulated deformable convolution and RoIpooling. Especially, we updated the deformable conv layer which can reproduce the results in the Deformable ConvNets v2 paper. The major changes are as follows:
 
 * To better handle occasions where sampling locations are outside of the image boundary.
 
