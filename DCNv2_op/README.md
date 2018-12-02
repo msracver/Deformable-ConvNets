@@ -5,10 +5,10 @@
 This folder provides the operators used in [Deformable ConvNets v2](https://arxiv.org/abs/1811.11168):
 
 ```
-@article{DCNv2_2018,
+@article{zhu2018deformable,
   title={Deformable ConvNets v2: More Deformable, Better Results},
-  author={Xizhou Zhu and Han Hu and Stephen Lin and Jifeng Dai},
-  journal={arXiv:1811.11168},
+  author={Zhu, Xizhou and Hu, Han and Lin, Stephen and Dai, Jifeng},
+  journal={arXiv preprint arXiv:1811.11168},
   year={2018}
 }
 ```
