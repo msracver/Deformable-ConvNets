@@ -22,7 +22,7 @@ This folder provides the operators of modulated deformable convolution and RoIpo
     In the new operator, if the sampling location is within one pixel outside of the feature map boundary, bilinear sampling would also be applied. And gradient with respect to learnable offset can be non zero for such locations. This is implemented by padding zeros (by one row/column) outside of the boundaries of feature maps, and performing bilinear sampling on the padded feature maps.
 
 
-* The efficiency when processing multiple images in a mini-batch is considerably improved.
+* The efficiency of processing multiple images in a mini-batch is considerably improved.
 
     Both the previous and the updated operators follow the following computation pipeline (illustrated by a 3x3 deformable convolution with input data of NxCxHxW and output data of NxC'xHxW):
 
