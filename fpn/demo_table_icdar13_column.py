@@ -25,7 +25,7 @@ os.environ['PYTHONUNBUFFERED'] = '1'
 os.environ['MXNET_CUDNN_AUTOTUNE_DEFAULT'] = '0'
 os.environ['MXNET_ENABLE_GPU_P2P'] = '0'
 cur_path = os.path.abspath(os.path.dirname(__file__))
-update_config(cur_path + '/../experiments/fpn/cfgs/resnet_v1_101_icdar_str_devkit_fpn_dcn_end2end_ohem.yaml')
+update_config(cur_path + '/../experiments/fpn/cfgs/resnet_v1_101_icdar_str_devkit_column_fpn_dcn_end2end_ohem.yaml')
 
 sys.path.insert(0, os.path.join(cur_path, '../external/mxnet', config.MXNET_VERSION))
 import mxnet as mx
@@ -48,7 +48,7 @@ WRITE_DETECTION_RESULTS = True
 
 MODEL_EPOCH = 50
 CONFIDENCE_THRESHOLD = 0.5
-EXPERIMENT_NAME = "icdar-fpn-2cls-false_examples-" + str(MODEL_EPOCH) + "ep-" + str(CONFIDENCE_THRESHOLD) + "conf"
+EXPERIMENT_NAME = "2cls-false_examples-" + str(MODEL_EPOCH) + "ep-" + str(CONFIDENCE_THRESHOLD) + "conf"
 MODEL_PATH = './output/fpn/structure-latest-column-1/resnet_v1_101_icdar_str_devkit_fpn_dcn_end2end_ohem/train/fpn_icdar_str_devkit'
 
 
@@ -209,7 +209,7 @@ def main():
 
     # load demo data
     dataBaseDir = '/mnt/Imran/datasets/icdar_str_devkit/data/'
-    outputBaseDir = '/mnt/Imran/StructureResults/Deformable-fpn-model-column-1-' + EXPERIMENT_NAME
+    outputBaseDir = '/mnt/Imran/StructureResults/ _ICDAR_13_COLUMN_Deformable-fpn-model-' + EXPERIMENT_NAME
 
     if os.path.exists(outputBaseDir):
         shutil.rmtree(outputBaseDir)

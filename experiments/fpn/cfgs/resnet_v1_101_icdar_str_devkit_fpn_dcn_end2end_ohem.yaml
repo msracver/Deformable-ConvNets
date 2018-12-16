@@ -1,6 +1,6 @@
 ---
 MXNET_VERSION: "mxnet"
-output_path: "./output/fpn/structure-icdar13-row"
+output_path: "./output/fpn/structure-latest-4"
 symbol: resnet_v1_101_fpn_dcn_rcnn
 gpus: '0'
 CLASS_AGNOSTIC: false
@@ -57,8 +57,8 @@ network:
   - 16
   NUM_ANCHORS: 15
 dataset:
-  NUM_CLASSES: 2
-  dataset: TableStr
+  NUM_CLASSES: 3
+  dataset: TableStrOld
   dataset_path: "/mnt/Imran/datasets/icdar_str_devkit"
   image_set: train #train2014+valminusminival2014
   # image_set: minival2014
