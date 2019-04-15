@@ -2,7 +2,7 @@
 
 ## Update
 
-**[04/15/2019] The PyTorch version of deformable convolution operators are available in the [mmdetection codebase](https://github.com/open-mmlab/mmdetection). They are very efficient!
+**[04/15/2019] The PyTorch version of deformable convolution operators are available in the [mmdetection codebase](https://github.com/open-mmlab/mmdetection). They are very efficient!**
 
 **[12/01/2018] We updated the deformable convolution operator to be the same as those utilized in the [Deformale ConvNets v2](https://arxiv.org/abs/1811.11168) paper. A possible issue when the sampling location is outside of image boundary is solved. The issue may cause deteriated performance on ImageNet classification. Note that the current deformable conv layers in both the official MXNet and the PyTorch codebase still have the issue. So if you want to reproduce the results in Deformable ConvNets v2, please utilize the updated layer provided here. The efficiency at large image batch size is also improved. See more details in [DCNv2_op/README.md](https://github.com/msracver/Deformable-ConvNets/blob/master/DCNv2_op/README.md).**
 
