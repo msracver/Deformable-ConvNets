@@ -25,7 +25,7 @@ def parse_voc_rec(filename):
     objects = []
     for obj in tree.findall('object'):
         obj_dict = dict()
-        obj_dict['name'] = obj.find('name').text
+        obj_dict['name'] = obj.find('name').text.lower().strip()
         obj_dict['difficult'] = int(obj.find('difficult').text)
         bbox = obj.find('bndbox')
         obj_dict['bbox'] = [int(float(bbox.find('xmin').text)),
