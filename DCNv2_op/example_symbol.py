@@ -12,7 +12,7 @@ def modulated_deformable_conv(data, name, num_filter, stride, lr_mult=0.1):
     conv2_mask =  mx.sym.slice_axis(conv2_offset, axis=1, begin=18, end=None)
     conv2_mask = 2 * mx.sym.Activation(conv2_mask, act_type='sigmoid')
 
-    conv2 = mx.contrib.symbol.ModulatedDeformableConvolution(name=name + '_conv2', data=act1, offset=conv2_offset_t, mask=conv2_mask,
+    conv2 = mx.contrib.symbol.ModulatedDeformableConvolution(name=name + '_conv2', data=data, offset=conv2_offset_t, mask=conv2_mask,
                        num_filter=num_filter, pad=(1, 1), kernel=(3, 3), stride=stride, 
                        num_deformable_group=1, no_bias=True)
     return conv2
