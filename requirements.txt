@@ -1,4 +1,0 @@
-Cython
-EasyDict
-opencv-python
-mxnet-cu80==0.12.0b20171027
